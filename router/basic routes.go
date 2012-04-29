@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 )
+
 type methodRoute struct {
 	method string
 	name   string
@@ -18,7 +19,7 @@ func (this *methodRoute) Run(req *http.Request, vars rack.Vars) bool {
 	return false
 }
 
-func createMethodRoute(method,name string, m rack.Middleware) (result *Router){
+func createMethodRoute(method, name string, m rack.Middleware) (result *Router) {
 	result = NewRouter()
 	result.Routing = &methodRoute{method: method, name: strings.ToLower(name)}
 	result.Action = m
@@ -27,22 +28,22 @@ func createMethodRoute(method,name string, m rack.Middleware) (result *Router){
 
 //Get provides a RouteTerminal that will direct a GET request to a specified handler
 func Get(name string, m rack.Middleware) (result *Router) {
-	return createMethodRoute("GET",name,m)
+	return createMethodRoute("GET", name, m)
 }
 
 //Post provides a RouteTermianl that will direct a POST request to a specified handler
 func Post(name string, m rack.Middleware) (result *Router) {
-	return createMethodRoute("POST",name,m)
+	return createMethodRoute("POST", name, m)
 }
 
 //Put provides a RouteTerminal that will direct a PUT request to a specified handler
 func Put(name string, m rack.Middleware) (result *Router) {
-	return createMethodRoute("PUT",name,m)
+	return createMethodRoute("PUT", name, m)
 }
 
 //Delete provides a RouteTerminal that will direct a DELETE request to specified handler
 func Delete(name string, m rack.Middleware) (result *Router) {
-	return createMethodRoute("DELETE",name,m)
+	return createMethodRoute("DELETE", name, m)
 }
 
 type simpleRoute struct {
@@ -57,12 +58,11 @@ func (this *simpleRoute) Run(req *http.Request, vars rack.Vars) bool {
 	return false
 }
 
-
 func BasicRoute(name string, m rack.Middleware) (result *Router) {
 	result = NewRouter()
-	result.Routing = &simpleRoute{name:strings.ToLower(name)}
+	result.Routing = &simpleRoute{name: strings.ToLower(name)}
 	result.Action = m
 	return
 }
 
-var All = BasicRoute	// a shortcut added for convenience to go along with Get,Put,Post, and Delete
+var All = BasicRoute // a shortcut added for convenience to go along with Get,Put,Post, and Delete

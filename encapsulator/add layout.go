@@ -5,8 +5,8 @@ import (
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheTemplater/templater"
 	"html/template"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 /*
@@ -31,7 +31,7 @@ func (this Encapsulator) Run(r *http.Request, vars rack.Vars, next rack.Next) (s
 	vars[this.BodyVar] = template.HTML(body)
 	w := rack.CreateResponse(status, header, []byte(""))
 
-	L,err := templater.Get(this.Folder + "/" + layout)
+	L, err := templater.Get(this.Folder + "/" + layout)
 	if err != nil {
 		//layout not found
 		//either log the error and let it through, or panic

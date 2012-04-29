@@ -5,16 +5,16 @@
 package oauther
 
 import (
-	"github.com/HairyMezican/goauth2/oauth"
-	"github.com/HairyMezican/TheRack/rack"
-	"github.com/HairyMezican/Middleware/interceptor"
-	"github.com/HairyMezican/Middleware/sessioner"
-	"net/http"
 	"crypto/rand"
 	"encoding/base64"
+	"github.com/HairyMezican/Middleware/interceptor"
+	"github.com/HairyMezican/Middleware/sessioner"
+	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/goauth2/oauth"
+	"net/http"
 )
 
-type TokenHandler func(Oauther,*oauth.Token) rack.Middleware
+type TokenHandler func(Oauther, *oauth.Token) rack.Middleware
 
 type Oauther interface {
 	GetConfig() *oauth.Config
@@ -27,11 +27,11 @@ type codeGetter struct {
 }
 
 func randomString() string {
-	b := make([]byte, 80) 
-    rand.Read(b) 
-    en := base64.StdEncoding
-    d := make([]byte, en.EncodedLen(len(b))) 
-    en.Encode(d, b)
+	b := make([]byte, 80)
+	rand.Read(b)
+	en := base64.StdEncoding
+	d := make([]byte, en.EncodedLen(len(b)))
+	en.Encode(d, b)
 	return string(d)
 }
 
@@ -71,7 +71,7 @@ func (this tokenGetter) Run(r *http.Request, vars rack.Vars, next rack.Next) (st
 	tok, _ := t.Exchange(code)
 
 	//Step 3: Have some other middleware handle whatever they're doing with the token (probably logging a user in)
-	process := this.t(this.o,tok)
+	process := this.t(this.o, tok)
 	return process.Run(r, vars, next)
 }
 

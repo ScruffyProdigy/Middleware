@@ -17,7 +17,7 @@ func NewRouter() *Router {
 	return this
 }
 
-func Route(routing Signaler,action rack.Middleware) *Router {
+func Route(routing Signaler, action rack.Middleware) *Router {
 	this := NewRouter()
 	this.Routing = routing
 	this.Action = action
@@ -47,8 +47,8 @@ type Signaler interface {
 	Run(r *http.Request, vars rack.Vars) bool
 }
 
-type SignalFunc func(*http.Request,rack.Vars) bool
+type SignalFunc func(*http.Request, rack.Vars) bool
 
-func (this SignalFunc) Run(r *http.Request,vars rack.Vars) bool {
-	return this(r,vars)
+func (this SignalFunc) Run(r *http.Request, vars rack.Vars) bool {
+	return this(r, vars)
 }
