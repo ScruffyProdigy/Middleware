@@ -3,7 +3,6 @@ package statuser
 import (
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheTemplater/templater"
-	"net/http"
 	"strconv"
 )
 
@@ -19,8 +18,10 @@ type Statuser struct {
 	Folder    string //the folder where the layouts are kept
 }
 
-func (this Statuser) Run(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
-	status, header, message = next()
+func (this Statuser) Run(vars rack.Vars, next func()) {
+	next()
+
+	status := rack.GetStatus(vars)
 
 	layout := strconv.Itoa(status)
 	if templater.Available(this.Folder + "/" + layout) {
@@ -32,10 +33,7 @@ func (this Statuser) Run(r *http.Request, vars rack.Vars, next rack.Next) (statu
 	if templater.Available(this.Folder + "/" + layout) {
 		vars[this.ErrorVar] = strconv.Itoa(status)
 		vars[this.LayoutVar] = layout
-		return
 	}
-
-	return
 }
 
 /*

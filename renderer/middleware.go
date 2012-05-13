@@ -3,23 +3,22 @@ package renderer
 import (
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheTemplater/templater"
-	"net/http"
 )
 
 type Renderer struct {
 	Template string
 }
 
-func (this Renderer) Run(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
-	return Render(this.Template, vars)
+func (this Renderer) Run(vars rack.Vars, next func()) {
+	Render(vars, this.Template)
 }
 
-func Render(s string, vars rack.Vars) (status int, header http.Header, message []byte) {
-	w := rack.BlankResponse()
+func Render(vars rack.Vars, s string) {
+	w := rack.BlankResponse(vars)
 	t, err := templater.Get(s)
 	if err != nil {
 		panic(err)
 	}
 	t.Execute(w, vars)
-	return w.Results()
+	w.Save()
 }

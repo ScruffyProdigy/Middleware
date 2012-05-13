@@ -2,56 +2,54 @@ package sessioner
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
-	"net/http"
+)
+
+const (
+	sessionIndex = "session"
+	flashesIndex = "flashes"
 )
 
 /*
 	Middleware is the Middleware function that inserts a Session variable as "Session" into Rack variables
 	This allows all later Middleware to have persistent effects
 */
-var Middleware = rack.Func(func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
+var Middleware rack.Func = func(vars rack.Vars, next func()) {
+	r := rack.GetRequest(vars)
+
 	session := get(r)
-	vars["session"] = Session(session)
+	vars[sessionIndex] = Session(session)
 
-	vars["flashes"] = session.Clear("flash")
-	_, isStrings := vars["flashes"].([]string)
+	vars[flashesIndex] = session.Clear(flashesIndex)
+	_, isStrings := vars[flashesIndex].([]string)
 	if !isStrings {
-		vars["flashes"] = []string{}
+		vars[flashesIndex] = []string{}
 	}
 
-	w := rack.CreateResponse(next())
+	next()
+
+	w := rack.CreateResponse(vars)
 	session.save(w)
-	return w.Results()
-})
-
-func Set(k, v interface{}) rack.VarFunc {
-	return func(vars rack.Vars) interface{} {
-		vars["session"].(Session).Set(k, v)
-		return nil
-	}
+	w.Save()
 }
 
-func Get(k interface{}) rack.VarFunc {
-	return func(vars rack.Vars) interface{} {
-		return vars["session"].(Session).Get(k)
-	}
+func Set(vars rack.Vars, k, v interface{}) {
+	vars[sessionIndex].(Session).Set(k, v)
 }
 
-func Clear(k interface{}) rack.VarFunc {
-	return func(vars rack.Vars) interface{} {
-		return vars["session"].(Session).Clear(k)
-	}
+func Get(vars rack.Vars, k interface{}) interface{} {
+	return vars[sessionIndex].(Session).Get(k)
 }
 
-func AddFlash(s string) rack.VarFunc {
-	return func(vars rack.Vars) interface{} {
-		a, isStrings := vars.Apply(Get("flash")).([]string)
-		if !isStrings {
-			a = []string{s}
-		} else {
-			a = append(a, s)
-		}
-		vars.Apply(Set("flash", a))
-		return nil
+func Clear(vars rack.Vars, k interface{}) interface{} {
+	return vars[sessionIndex].(Session).Clear(k)
+}
+
+func AddFlash(vars rack.Vars, s string) {
+	a, isStrings := Get(vars, "flash").([]string)
+	if !isStrings {
+		a = []string{s}
+	} else {
+		a = append(a, s)
 	}
+	Set(vars, "flash", a)
 }

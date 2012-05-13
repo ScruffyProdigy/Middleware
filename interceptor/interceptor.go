@@ -5,7 +5,6 @@ package interceptor
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
-	"net/http"
 )
 
 type PreExistingInterceptorError struct {
@@ -25,13 +24,14 @@ func (this Interceptor) Intercept(url string, exec rack.Middleware) {
 	this[url] = exec
 }
 
-func (this Interceptor) Run(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
-	url := r.URL.Path
+func (this Interceptor) Run(vars rack.Vars, next func()) {
+	url := rack.GetRequest(vars).URL.Path
 	exec := this[url]
-	if exec == nil {
-		return next()
+	if exec != nil {
+		exec.Run(vars, next)
+	} else {
+		next()
 	}
-	return exec.Run(r, vars, next)
 }
 
 func New() Interceptor {

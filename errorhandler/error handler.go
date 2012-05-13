@@ -5,7 +5,6 @@ package errorhandler
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
-	"net/http"
 )
 
 func getErrorString(rec interface{}) string {
@@ -20,14 +19,13 @@ func getErrorString(rec interface{}) string {
 	return "Unknown Error"
 }
 
-var ErrorHandler = rack.Func(func(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
+var ErrorHandler rack.Func = func(vars rack.Vars, next func()) {
 	defer func() {
 		rec := recover()
 		if rec != nil {
-			status = http.StatusInternalServerError
-			message = []byte(getErrorString(rec))
-			header = make(http.Header)
+			rack.StatusError(vars)
+			rack.SetMessageString(vars, getErrorString(rec))
 		}
 	}()
-	return next()
-})
+	next()
+}

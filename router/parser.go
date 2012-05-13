@@ -2,16 +2,24 @@ package router
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
-	"net/http"
 	"strings"
+)
+
+const (
+	currentSectionIndex = "currentSection"
+	parsedRouteIndex    = "parsedRoute"
+	caseSensitiveIndex  = "caseSensitive"
+	RouteEnd            = "/"
 )
 
 /*
 	parser breaks down the request's URL path into a slice of strings
 	later middleware will use it to direct control
 */
-var Parser = rack.Func(func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
-	parsedRoute := strings.Split(strings.ToLower(r.URL.Path), "/")
+
+func Parse(vars rack.Vars) []string {
+	r := rack.GetRequest(vars)
+	parsedRoute := strings.Split(r.URL.Path, "/")
 	newParsedRoute := make([]string, 0, len(parsedRoute)+1)
 	for _, section := range parsedRoute {
 		if section != "" {
@@ -20,22 +28,56 @@ var Parser = rack.Func(func(r *http.Request, vars rack.Vars, next rack.Next) (in
 			newParsedRoute[l] = section
 		}
 	}
-	l := len(newParsedRoute)
-	newParsedRoute = newParsedRoute[0 : l+1]
-	newParsedRoute[l] = "/"
 
-	vars["parsedRoute"] = newParsedRoute
-	vars["currentSection"] = 0
-
-	return next()
-})
-
-func CurrentSection(vars rack.Vars) interface{} {
-	return vars["parsedRoute"].([]string)[vars["currentSection"].(int)]
+	vars[parsedRouteIndex] = newParsedRoute
+	return newParsedRoute
 }
 
-func nextSection(vars rack.Vars) (result interface{}) {
-	result = vars.Apply(CurrentSection)
-	vars["currentSection"] = vars["currentSection"].(int) + 1
-	return
+func CurrentSection(vars rack.Vars) string {
+	parsedRoute, ok := vars[parsedRouteIndex].([]string)
+	if !ok {
+		parsedRoute = Parse(vars)
+	}
+
+	index, ok := vars[currentSectionIndex].(int)
+	if !ok {
+		index = 0
+	}
+
+	if index < 0 || index >= len(parsedRoute) {
+		return RouteEnd
+	}
+
+	result := parsedRoute[index]
+
+	if !IsCaseSensitive(vars) {
+		result = strings.ToLower(result)
+	}
+
+	return result
+}
+
+func nextSection(vars rack.Vars) {
+	index, ok := vars[currentSectionIndex].(int)
+	if !ok {
+		index = 0
+	}
+	vars[currentSectionIndex] = index + 1
+}
+
+func IsCaseSensitive(vars rack.Vars) bool {
+	result, ok := vars[caseSensitiveIndex].(bool)
+
+	if ok && result {
+		return true
+	}
+	return false
+}
+
+func SetCaseSensitive(vars rack.Vars) {
+	vars[caseSensitiveIndex] = true
+}
+
+func SetCaseInsensitive(vars rack.Vars) {
+	vars[caseSensitiveIndex] = false
 }

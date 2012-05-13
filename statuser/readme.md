@@ -6,7 +6,6 @@ This uses TheTemplater to figure out which templates are available (github.com/H
 
 ## 	Installation
 `go get github.com/HairyMezican/Middleware/statuser`
-you'll also need to use a `go get github.com/HairyMezican/TheTemplater` to get the dependency if you haven't already
 
 ## 	Example
 
@@ -18,16 +17,18 @@ __main.go__
 		"github.com/HairyMezican/Middleware/encapsulator"
 		"github.com/HairyMezican/Middleware/statuser"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/HairyMezican/TheRack/templater"
 	)
 
 	func main() {
 		templater.LoadFromFiles("templates", nil)
 
+		rackup := rack.New()
+		rackup.Add(encapsulator.AddLayout)
+		rackup.Add(statuser.SetErrorLayout)
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(encapsulator.AddLayout)
-		rack.Up.Add(statuser.SetErrorLayout)
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
 	
 __templates/layouts/404.tmpl__
@@ -53,23 +54,26 @@ __main.go__
 		"github.com/HairyMezican/Middleware/encapsulator"
 		"github.com/HairyMezican/Middleware/statuser"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
-		"net/http"
+		"github.com/HairyMezican/TheRack/templater"
 	)
 
-	var ErrorWare rack.Func = func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
-		return http.StatusInternalServerError, rack.NewHeader(), []byte("")
+	var ErrorWare rack.Func = func(vars rack.Vars, next func()) {
+		rack.StatusError(vars)
+		rack.SetMessageString(vars, "An unknown error has occurred")
 	}
 
 	func main() {
 		templater.LoadFromFiles("templates", nil)
 
+		rackup := rack.New()
+		rackup.Add(encapsulator.AddLayout)
+		rackup.Add(statuser.SetErrorLayout)
+		rackup.Add(ErrorWare)
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(encapsulator.AddLayout)
-		rack.Up.Add(statuser.SetErrorLayout)
-		rack.Up.Add(ErrorWare)
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
+	
 
 __templates/layouts/5xx.tmpl__
 

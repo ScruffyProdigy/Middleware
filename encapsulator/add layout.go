@@ -5,8 +5,6 @@ import (
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheTemplater/templater"
 	"html/template"
-	"log"
-	"net/http"
 )
 
 /*
@@ -19,25 +17,25 @@ type Encapsulator struct {
 	Folder    string //the folder to look for the layouts in
 }
 
-func (this Encapsulator) Run(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
-	status, header, body := next()
+func (this Encapsulator) Run(vars rack.Vars, next func()) {
+	next()
 
-	layout, castable := vars[this.LayoutVar].(string)
-	if !castable {
+	layout, hasLayout := vars[this.LayoutVar].(string)
+	if !hasLayout {
 		//no "layout", just let it through
 		return
 	}
 
-	vars[this.BodyVar] = template.HTML(body)
-	w := rack.CreateResponse(status, header, []byte(""))
+	vars[this.BodyVar] = template.HTML(rack.ResetMessage(vars))
+	w := rack.CreateResponse(vars)
 
 	L, err := templater.Get(this.Folder + "/" + layout)
 	if err != nil {
 		//layout not found
 		//either log the error and let it through, or panic
-		logger, isLogger := vars.Apply(logger.Get).(log.Logger)
-		if isLogger {
-			logger.Println(err.Error())
+		l := logger.Get(vars)
+		if l != nil {
+			l.Println(err.Error())
 			return
 		} else {
 			panic(err)
@@ -46,7 +44,7 @@ func (this Encapsulator) Run(r *http.Request, vars rack.Vars, next rack.Next) (s
 
 	L.Execute(w, vars)
 
-	return w.Results()
+	w.Save()
 }
 
 /*

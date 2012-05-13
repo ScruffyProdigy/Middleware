@@ -7,22 +7,20 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 3.	It uses my adaptation of goauth2 to implement the oauth protocol (github.com/HairyMezican/goauth2/oauth)
 
 ## Installation
-`go get github.com/HairyMezican/Middleware/oauther`
-you'll need to use a `go get` for each of the dependencies
-and you'll want to use a `go get` for some of the interface implementations in the subfolders
+`go get github.com/HairyMezican/Middleware/oauther/...`
 
 ## Example
 
 	package main
 
 	import (
-		"encoding/json"
 		"github.com/HairyMezican/Middleware/interceptor"
 		"github.com/HairyMezican/Middleware/oauther"
 		"github.com/HairyMezican/Middleware/oauther/facebooker"
 		"github.com/HairyMezican/Middleware/sessioner"
 		"github.com/HairyMezican/TheRack/rack"
 		"github.com/HairyMezican/goauth2/oauth"
+		"encoding/json"
 		"net/http"
 	)
 
@@ -37,14 +35,12 @@ and you'll want to use a `go get` for some of the interface implementations in t
 
 	func TokenHandler(o oauther.Oauther, tok *oauth.Token) rack.Middleware {
 		fb := o.(*facebooker.Facebooker)
-		return rack.Func(func(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
-			status,header = http.StatusOK,rack.NewHeader()
+		return rack.Func(func(vars rack.Vars, next func()) {
 			if tok == nil {
-				message = []byte("User declined app")
+				rack.SetMessageString(vars, "User declined app")
 			} else {
-				message = []byte(getUserID(fb, tok))
+				rack.SetMessageString(vars, getUserID(fb, tok))
 			}
-			return
 		})
 	}
 
@@ -72,11 +68,14 @@ and you'll want to use a `go get` for some of the interface implementations in t
 		fb := facebooker.New(data)
 		oauther.SetIntercepts(cept, fb, TokenHandler)
 
+		rackup := rack.New()
+		rackup.Add(sessioner.Middleware)
+		rackup.Add(cept)
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(sessioner.Middleware)
-		rack.Up.Add(cept)
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
+	
 	
 
 If you go to "localhost:3000/", you should be immediately redirected to facebook, and once you authorize the app, you'll be sent back, and you'll see your user ID

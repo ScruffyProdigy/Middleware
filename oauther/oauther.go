@@ -8,6 +8,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"github.com/HairyMezican/Middleware/interceptor"
+	"github.com/HairyMezican/Middleware/redirecter"
 	"github.com/HairyMezican/Middleware/sessioner"
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/goauth2/oauth"
@@ -35,13 +36,11 @@ func randomString() string {
 	return string(d)
 }
 
-func (this codeGetter) Run(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
+func (this codeGetter) Run(vars rack.Vars, next func()) {
 	state := randomString()
-	vars.Apply(sessioner.Set("state", state))
-	w := rack.BlankResponse()
+	sessioner.Set(vars, "state", state)
 	url := this.o.GetConfig().AuthCodeURL(state)
-	http.Redirect(w, r, url, http.StatusFound)
-	return w.Results()
+	redirecter.Redirect(vars, url)
 }
 
 type tokenGetter struct {
@@ -49,20 +48,22 @@ type tokenGetter struct {
 	t TokenHandler
 }
 
-func (this tokenGetter) Run(r *http.Request, vars rack.Vars, next rack.Next) (status int, header http.Header, message []byte) {
+func (this tokenGetter) Run(vars rack.Vars, next func()) {
 	//Step 1: Ensure states match
+	r := rack.GetRequest(vars)
+	if r == nil {
+		panic("Request not found")
+	}
+
 	state1 := r.FormValue("state")
-	state2, isString := vars.Apply(sessioner.Clear("state")).(string)
+	state2 := sessioner.Clear(vars, "state")
 
 	//if states don't match, it's a potential CSRF attempt; we're just going to pass it on, and a 404 will probably be passed back (unless this happens to route somewhere else too)
 	//perhaps we should just return a 401-Unauthorized, though
-	if !isString {
-		//	Warning: Potential CSRF attempt : cookie not set properly
-		return next()
-	}
 	if state1 != state2 {
 		//	Warning: Potential CSRF attempt : states don't match
-		return next()
+		next()
+		return
 	}
 
 	//Step 2: Exchange the code for the token
@@ -72,7 +73,7 @@ func (this tokenGetter) Run(r *http.Request, vars rack.Vars, next rack.Next) (st
 
 	//Step 3: Have some other middleware handle whatever they're doing with the token (probably logging a user in)
 	process := this.t(this.o, tok)
-	return process.Run(r, vars, next)
+	process.Run(vars, next)
 }
 
 func SetIntercepts(i interceptor.Interceptor, o Oauther, t TokenHandler) {

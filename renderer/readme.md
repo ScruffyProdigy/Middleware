@@ -7,7 +7,6 @@ This uses templates from TheTemplater to simplify rendering	(github.com/HairyMez
 
 ## 	Installation
 `go get github.com/HairyMezican/Middleware/renderer`
-you'll also need to use a `go get github.com/HairyMezican/TheTemplater` to get the dependency if you haven't already
 
 ## 	Example
 
@@ -18,23 +17,22 @@ __main.go__
 	import (
 		"github.com/HairyMezican/Middleware/renderer"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
-		"net/http"
+		"github.com/HairyMezican/TheRack/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
+	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
 		vars["Title"] = "Hello World"
 		vars["Message"] = "Hello World"
-		return renderer.Render("main",vars)
+		renderer.Render(vars, "main")
 	}
 
 	func main() {
-		templater.LoadFromFiles("templates",nil)
+		templater.LoadFromFiles("templates", nil)
 
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(HelloWorldWare)
-		rack.Run(conn, rack.Up)
+		conn.Go(HelloWorldWare)
 	}
+	
 	
 __templates/main.tmpl__
 
@@ -54,22 +52,23 @@ Running this will display an HTML file with the text "Hello World" in both the t
 	import (
 		"github.com/HairyMezican/Middleware/renderer"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
-		"net/http"
+		"github.com/HairyMezican/TheRack/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
+	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
 		vars["Title"] = "Hello World"
 		vars["Message"] = "Hello World"
-		return next()
+		next()
 	}
 
 	func main() {
 		templater.LoadFromFiles("templates", nil)
 
+		rackup := rack.New()
+		rackup.Add(HelloWorldWare)
+		rackup.Add(renderer.Renderer{Template: "main"})
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(HelloWorldWare)
-		rack.Up.Add(renderer.Renderer{Template: "main"})
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
 	

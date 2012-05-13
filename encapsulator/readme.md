@@ -7,7 +7,6 @@ This is mostly used to add a layout to the output of future middleware
 
 ##	Installation
 `go get github.com/HairyMezican/Middleware/encapsulator`
-you'll also need to use a `go get` for each of the dependencies
 
 ## Example
 
@@ -18,24 +17,26 @@ __main.go__
 	import (
 		"github.com/HairyMezican/Middleware/encapsulator"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
-		"net/http"
+		"github.com/TheTemplater/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
+	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
 		vars["Layout"] = "base"
 		vars["Title"] = "Hello World"
-		return http.StatusOK, rack.NewHeader(), []byte("Hello World")
+		rack.AppendMessageString(vars, "Hello World!")
 	}
 
 	func main() {
 		templater.LoadFromFiles("templates", nil)
 
+		rackup := rack.New()
+		rackup.Add(encapsulator.AddLayout)
+		rackup.Add(HelloWorldWare)
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(encapsulator.AddLayout)
-		rack.Up.Add(HelloWorldWare)
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
+	
 
 __templates/layouts/base.templ__
 

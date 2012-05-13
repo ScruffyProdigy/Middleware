@@ -1,9 +1,6 @@
 # Logger
 This is used to set a logger that all other middleware will have access to
 
-## Dependencies
-None
-
 ## Installation
 `go get github.com/HairyMezican/Middleware/logger`
 
@@ -15,23 +12,25 @@ None
 		"github.com/HairyMezican/Middleware/logger"
 		"github.com/HairyMezican/TheRack/rack"
 		"log"
-		"net/http"
 		"os"
 	)
 
-	var HelloWorldWare rack.Func = func(r *http.Request, vars rack.Vars, next rack.Next) (int, http.Header, []byte) {
-		lg, isLogger := vars.Apply(logger.Get).(*log.Logger)
-		if isLogger {
+	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
+		lg := logger.Get(vars)
+		if lg != nil {
 			lg.Println("Hello World!")
 		}
-		return http.StatusOK, rack.NewHeader(), []byte("Hello World!")
+		rack.SetMessageString(vars, "Hello World!")
 	}
 
 	func main() {
+		rackup := rack.New()
+		rackup.Add(logger.Set(os.Stdout, "Log Test - ", log.LstdFlags))
+		rackup.Add(HelloWorldWare)
+
 		conn := rack.HttpConnection(":3000")
-		rack.Up.Add(logger.Set(os.Stdout, "Log Test - ", log.LstdFlags))
-		rack.Up.Add(HelloWorldWare)
-		rack.Run(conn, rack.Up)
+		conn.Go(rackup)
 	}
 	
-running this should display a "Hello World!" message at localhost:3000, but when it does so, it should also display a 
+	
+running this should display a "Hello World!" message at localhost:3000, but when it does so, it should also display the same message to the standard output with "Log Test - " and the time appended

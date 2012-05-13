@@ -2,26 +2,39 @@ package router
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
-	"net/http"
 	"strings"
 )
 
-type methodRoute struct {
-	method string
-	name   string
+type basicRoute struct {
+	methodMatters bool
+	method        string
+	name          string
 }
 
-func (this *methodRoute) Run(req *http.Request, vars rack.Vars) bool {
-	sec := vars.Apply(CurrentSection).(string)
-	if sec == this.name && req.Method == this.method {
-		return true
+func (this *basicRoute) Run(vars rack.Vars) bool {
+	sec := CurrentSection(vars)
+
+	name := this.name
+	if !IsCaseSensitive(vars) {
+		name = strings.ToLower(name)
 	}
-	return false
+
+	if sec != name {
+		return false
+	}
+
+	if this.methodMatters {
+		req := rack.GetRequest(vars)
+		if req.Method != this.method {
+			return false
+		}
+	}
+	return true
 }
 
 func createMethodRoute(method, name string, m rack.Middleware) (result *Router) {
 	result = NewRouter()
-	result.Routing = &methodRoute{method: method, name: strings.ToLower(name)}
+	result.Routing = &basicRoute{method: method, name: name, methodMatters: true}
 	result.Action = m
 	return
 }
@@ -46,21 +59,9 @@ func Delete(name string, m rack.Middleware) (result *Router) {
 	return createMethodRoute("DELETE", name, m)
 }
 
-type simpleRoute struct {
-	name string
-}
-
-func (this *simpleRoute) Run(req *http.Request, vars rack.Vars) bool {
-	sec := strings.ToLower(vars.Apply(CurrentSection).(string))
-	if sec == this.name {
-		return true
-	}
-	return false
-}
-
 func BasicRoute(name string, m rack.Middleware) (result *Router) {
 	result = NewRouter()
-	result.Routing = &simpleRoute{name: strings.ToLower(name)}
+	result.Routing = &basicRoute{name: name, method: "", methodMatters: false}
 	result.Action = m
 	return
 }
