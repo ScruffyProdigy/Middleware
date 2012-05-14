@@ -16,20 +16,21 @@ __main.go__
 
 	import (
 		"github.com/HairyMezican/Middleware/renderer"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheRack/templater"
+		"github.com/HairyMezican/TheTemplater/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
 		vars["Title"] = "Hello World"
 		vars["Message"] = "Hello World"
-		renderer.Render(vars, "main")
+		(renderer.V)(vars).Render("main")
 	}
 
 	func main() {
 		templater.LoadFromFiles("templates", nil)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(HelloWorldWare)
 	}
 	
@@ -51,11 +52,12 @@ Running this will display an HTML file with the text "Hello World" in both the t
 
 	import (
 		"github.com/HairyMezican/Middleware/renderer"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheRack/templater"
+		"github.com/HairyMezican/TheTemplater/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
 		vars["Title"] = "Hello World"
 		vars["Message"] = "Hello World"
 		next()
@@ -68,7 +70,7 @@ Running this will display an HTML file with the text "Hello World" in both the t
 		rackup.Add(HelloWorldWare)
 		rackup.Add(renderer.Renderer{Template: "main"})
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

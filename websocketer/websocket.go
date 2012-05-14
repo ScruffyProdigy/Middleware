@@ -1,7 +1,8 @@
 package websocketer
 
 import (
-	websocket "code.google.com/p/go.net/websocket"
+	"code.google.com/p/go.net/websocket"
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
 )
 
@@ -30,8 +31,8 @@ type Middleware struct {
 	onOpen, onMessage, onClose *rack.Rack
 }
 
-func (this Middleware) Run(vars rack.Vars, next func()) {
-	r := rack.GetRequest(vars)
+func (this Middleware) Run(vars map[string]interface{}, next func()) {
+	r := (httper.V)(vars).GetRequest()
 	if r.Header.Get("Upgrade") != "WebSocket" {
 		//if it wasn't a websocket request, ignore it
 		next()
@@ -61,14 +62,16 @@ func (this Middleware) Run(vars rack.Vars, next func()) {
 					this.onMessage.Run(vars, func() {})
 
 					//If we have a response, send it back
-					response := vars.Clear(responseIndex)
+					response := vars[responseIndex]
+					delete(vars,responseIndex)
+					
 					if response != nil {
 						this.messageType.Send(ws, response)
 					}
 				}()
 			}
 		}
-		w := rack.BlankResponse(vars)
+		w := (httper.V)(vars).BlankResponse()
 		handler.ServeHTTP(w, r)
 		w.Save()
 	}
@@ -98,23 +101,25 @@ func (this Middleware) OnStorage(f func() interface{}) {
 	this.onStorage = f
 }
 
-func Message(vars rack.Vars) interface{} {
+type V map[string]interface{}
+
+func (vars V) GetMessage() interface{} {
 	return vars[messageIndex]
 }
 
-func SetResponse(vars rack.Vars, response interface{}) {
+func (vars V) SetResponse(response interface{}) {
 	vars[responseIndex] = response
 }
 
-func SendBasicMessage(vars rack.Vars, message interface{}) {
-	sendmessage(vars, message, websocket.Message)
+func (vars V) SendBasicMessage(message interface{}) {
+	vars.sendmessage(message, websocket.Message)
 }
 
-func SendJSONMessage(vars rack.Vars, message interface{}) {
-	sendmessage(vars, message, websocket.JSON)
+func (vars V) SendJSONMessage(message interface{}) {
+	vars.sendmessage(message, websocket.JSON)
 }
 
-func sendmessage(vars rack.Vars, message interface{}, c websocket.Codec) {
+func (vars V) sendmessage(message interface{}, c websocket.Codec) {
 	ws, ok := vars[websocketIndex].(*websocket.Conn)
 	if !ok {
 		panic("Can't find websocket")

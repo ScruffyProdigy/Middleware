@@ -18,6 +18,7 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 		"github.com/HairyMezican/Middleware/oauther"
 		"github.com/HairyMezican/Middleware/oauther/facebooker"
 		"github.com/HairyMezican/Middleware/sessioner"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 		"github.com/HairyMezican/goauth2/oauth"
 		"encoding/json"
@@ -35,11 +36,11 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 
 	func TokenHandler(o oauther.Oauther, tok *oauth.Token) rack.Middleware {
 		fb := o.(*facebooker.Facebooker)
-		return rack.Func(func(vars rack.Vars, next func()) {
+		return rack.Func(func(vars map[string]interface{}, next func()) {
 			if tok == nil {
-				rack.SetMessageString(vars, "User declined app")
+				(httper.V)(vars).SetMessageString("User declined app")
 			} else {
-				rack.SetMessageString(vars, getUserID(fb, tok))
+				(httper.V)(vars).SetMessageString(getUserID(fb, tok))
 			}
 		})
 	}
@@ -72,7 +73,7 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 		rackup.Add(sessioner.Middleware)
 		rackup.Add(cept)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

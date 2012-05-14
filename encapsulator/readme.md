@@ -16,14 +16,15 @@ __main.go__
 
 	import (
 		"github.com/HairyMezican/Middleware/encapsulator"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/TheTemplater/templater"
+		"github.com/HairyMezican/TheTemplater/templater"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
 		vars["Layout"] = "base"
 		vars["Title"] = "Hello World"
-		rack.AppendMessageString(vars, "Hello World!")
+		(httper.V)(vars).AppendMessageString("Hello World!")
 	}
 
 	func main() {
@@ -33,7 +34,7 @@ __main.go__
 		rackup.Add(encapsulator.AddLayout)
 		rackup.Add(HelloWorldWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

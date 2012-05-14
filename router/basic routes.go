@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
 	"strings"
 )
@@ -11,11 +12,11 @@ type basicRoute struct {
 	name          string
 }
 
-func (this *basicRoute) Run(vars rack.Vars) bool {
-	sec := CurrentSection(vars)
+func (this *basicRoute) Run(vars map[string]interface{}) bool {
+	sec := V(vars).CurrentSection()
 
 	name := this.name
-	if !IsCaseSensitive(vars) {
+	if !V(vars).IsCaseSensitive() {
 		name = strings.ToLower(name)
 	}
 
@@ -24,7 +25,7 @@ func (this *basicRoute) Run(vars rack.Vars) bool {
 	}
 
 	if this.methodMatters {
-		req := rack.GetRequest(vars)
+		req := (httper.V)(vars).GetRequest()
 		if req.Method != this.method {
 			return false
 		}

@@ -2,6 +2,7 @@ package methoder
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"strings"
 )
 
@@ -11,8 +12,8 @@ func isLegal(s string) bool {
 	return legal[s]
 }
 
-var Override rack.Func = func(vars rack.Vars, next func()) {
-	r := rack.GetRequest(vars)
+var Override rack.Func = func(vars map[string]interface{}, next func()) {
+	r := httper.V(vars).GetRequest()
 	method := strings.ToUpper(r.Form.Get("_method"))
 	if isLegal(method) {
 		r.Method = method

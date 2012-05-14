@@ -5,6 +5,7 @@ package interceptor
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 )
 
 type PreExistingInterceptorError struct {
@@ -24,8 +25,8 @@ func (this Interceptor) Intercept(url string, exec rack.Middleware) {
 	this[url] = exec
 }
 
-func (this Interceptor) Run(vars rack.Vars, next func()) {
-	url := rack.GetRequest(vars).URL.Path
+func (this Interceptor) Run(vars map[string]interface{}, next func()) {
+	url := httper.V(vars).GetRequest().URL.Path
 	exec := this[url]
 	if exec != nil {
 		exec.Run(vars, next)

@@ -2,7 +2,7 @@ package encapsulator
 
 import (
 	"github.com/HairyMezican/Middleware/logger"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheTemplater/templater"
 	"html/template"
 )
@@ -17,7 +17,7 @@ type Encapsulator struct {
 	Folder    string //the folder to look for the layouts in
 }
 
-func (this Encapsulator) Run(vars rack.Vars, next func()) {
+func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	next()
 
 	layout, hasLayout := vars[this.LayoutVar].(string)
@@ -26,14 +26,14 @@ func (this Encapsulator) Run(vars rack.Vars, next func()) {
 		return
 	}
 
-	vars[this.BodyVar] = template.HTML(rack.ResetMessage(vars))
-	w := rack.CreateResponse(vars)
+	vars[this.BodyVar] = template.HTML(httper.V(vars).ResetMessage())
+	w := httper.V(vars).FilledResponse()
 
 	L, err := templater.Get(this.Folder + "/" + layout)
 	if err != nil {
 		//layout not found
 		//either log the error and let it through, or panic
-		l := logger.Get(vars)
+		l := logger.V(vars).Get()
 		if l != nil {
 			l.Println(err.Error())
 			return

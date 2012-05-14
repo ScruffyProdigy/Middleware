@@ -1,7 +1,7 @@
 package statuser
 
 import (
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheTemplater/templater"
 	"strconv"
 )
@@ -18,10 +18,10 @@ type Statuser struct {
 	Folder    string //the folder where the layouts are kept
 }
 
-func (this Statuser) Run(vars rack.Vars, next func()) {
+func (this Statuser) Run(vars map[string]interface{}, next func()) {
 	next()
 
-	status := rack.GetStatus(vars)
+	status := httper.V(vars).GetStatus()
 
 	layout := strconv.Itoa(status)
 	if templater.Available(this.Folder + "/" + layout) {

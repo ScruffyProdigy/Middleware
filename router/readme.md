@@ -10,28 +10,30 @@ This provides a branching based router that goes through every directory specifi
 
 	import (
 		"github.com/HairyMezican/Middleware/router"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 		"strings"
 	)
 
 	var coins = map[string]string{"penny": "useless", "nickel": "heavy and annoying", "dime": "light and annoying", "quarter": "not obsolete quite yet"}
 
-	var RootWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessageString(vars, "<html>Check out <a href='/coins'>My Coins</a></html>")
+	var RootWare rack.Func = func(vars map[string]interface{}, next func()) {
+		(httper.V)(vars).SetMessageString("<html>Check out <a href='/coins'>My Coins</a></html>")
 	}
 
-	var CoinCollectionWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessageString(vars, "<html><ul>")
+	var CoinCollectionWare rack.Func = func(vars map[string]interface{}, next func()) {
+		v := httper.V(vars)
+		v.SetMessageString("<html><ul>")
 		for coin, _ := range coins {
-			rack.AppendMessageString(vars, "<li><a href='/coins/"+coin+"'>")
-			rack.AppendMessageString(vars, strings.ToUpper(coin[:1])+coin[1:])
-			rack.AppendMessageString(vars, "</a></li>")
+			v.AppendMessageString("<li><a href='/coins/" + coin + "'>")
+			v.AppendMessageString(strings.ToUpper(coin[:1]) + coin[1:])
+			v.AppendMessageString("</a></li>")
 		}
-		rack.AppendMessageString(vars, "</ul></html>")
+		v.AppendMessageString("</ul></html>")
 	}
 
-	var CoinSignaler router.SignalFunc = func(vars rack.Vars) bool {
-		coinName := router.CurrentSection(vars)
+	var CoinSignaler router.SignalFunc = func(vars map[string]interface{}) bool {
+		coinName := (router.V)(vars).CurrentSection()
 		coinInfo, exists := coins[coinName]
 		if !exists {
 			return false
@@ -40,8 +42,8 @@ This provides a branching based router that goes through every directory specifi
 		return true
 	}
 
-	var CoinMemberWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessage(vars, vars["Info"].([]byte))
+	var CoinMemberWare rack.Func = func(vars map[string]interface{}, next func()) {
+		(httper.V)(vars).SetMessage(vars["Info"].([]byte))
 	}
 
 	func main() {
@@ -53,7 +55,7 @@ This provides a branching based router that goes through every directory specifi
 		Root := router.BasicRoute("", RootWare)
 		Root.AddRoute(CollectionRoute)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(Root)
 	}
 	

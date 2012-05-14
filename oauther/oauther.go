@@ -11,6 +11,7 @@ import (
 	"github.com/HairyMezican/Middleware/redirecter"
 	"github.com/HairyMezican/Middleware/sessioner"
 	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/goauth2/oauth"
 	"net/http"
 )
@@ -36,11 +37,11 @@ func randomString() string {
 	return string(d)
 }
 
-func (this codeGetter) Run(vars rack.Vars, next func()) {
+func (this codeGetter) Run(vars map[string]interface{}, next func()) {
 	state := randomString()
-	sessioner.Set(vars, "state", state)
+	(sessioner.V)(vars).Set("state", state)
 	url := this.o.GetConfig().AuthCodeURL(state)
-	redirecter.Redirect(vars, url)
+	(redirecter.V)(vars).Redirect(url)
 }
 
 type tokenGetter struct {
@@ -48,15 +49,15 @@ type tokenGetter struct {
 	t TokenHandler
 }
 
-func (this tokenGetter) Run(vars rack.Vars, next func()) {
+func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 	//Step 1: Ensure states match
-	r := rack.GetRequest(vars)
+	r := httper.V(vars).GetRequest()
 	if r == nil {
 		panic("Request not found")
 	}
 
 	state1 := r.FormValue("state")
-	state2 := sessioner.Clear(vars, "state")
+	state2 := (sessioner.V)(vars).Clear("state")
 
 	//if states don't match, it's a potential CSRF attempt; we're just going to pass it on, and a 404 will probably be passed back (unless this happens to route somewhere else too)
 	//perhaps we should just return a 401-Unauthorized, though

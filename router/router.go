@@ -23,13 +23,13 @@ func Route(routing Signaler, action rack.Middleware) *Router {
 	return this
 }
 
-func (this *Router) Run(vars rack.Vars, next func()) {
-	if CurrentSection(vars) == RouteEnd {
+func (this *Router) Run(vars map[string]interface{}, next func()) {
+	if V(vars).CurrentSection() == RouteEnd {
 		this.Action.Run(vars, next)
 	} else {
 		for _, subroute := range this.subroutes {
 			if subroute.Routing.Run(vars) {
-				nextSection(vars)
+				V(vars).nextSection()
 				subroute.Run(vars, next)
 				return
 			}
@@ -43,11 +43,11 @@ func (this *Router) AddRoute(r ...*Router) {
 }
 
 type Signaler interface {
-	Run(vars rack.Vars) bool
+	Run(vars map[string]interface{}) bool
 }
 
-type SignalFunc func(rack.Vars) bool
+type SignalFunc func(map[string]interface{}) bool
 
-func (this SignalFunc) Run(vars rack.Vars) bool {
+func (this SignalFunc) Run(vars map[string]interface{}) bool {
 	return this(vars)
 }

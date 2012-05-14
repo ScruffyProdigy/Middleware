@@ -10,17 +10,18 @@ This is used to set a logger that all other middleware will have access to
 
 	import (
 		"github.com/HairyMezican/Middleware/logger"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 		"log"
 		"os"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
-		lg := logger.Get(vars)
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
+		lg := (logger.V)(vars).Get()
 		if lg != nil {
 			lg.Println("Hello World!")
 		}
-		rack.SetMessageString(vars, "Hello World!")
+		(httper.V)(vars).SetMessageString("Hello World!")
 	}
 
 	func main() {
@@ -28,7 +29,7 @@ This is used to set a logger that all other middleware will have access to
 		rackup.Add(logger.Set(os.Stdout, "Log Test - ", log.LstdFlags))
 		rackup.Add(HelloWorldWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

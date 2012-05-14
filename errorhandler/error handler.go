@@ -5,6 +5,7 @@ package errorhandler
 
 import (
 	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 )
 
 func getErrorString(rec interface{}) string {
@@ -19,12 +20,12 @@ func getErrorString(rec interface{}) string {
 	return "Unknown Error"
 }
 
-var ErrorHandler rack.Func = func(vars rack.Vars, next func()) {
+var ErrorHandler rack.Func = func(vars map[string]interface{}, next func()) {
 	defer func() {
 		rec := recover()
 		if rec != nil {
-			rack.StatusError(vars)
-			rack.SetMessageString(vars, getErrorString(rec))
+			httper.V(vars).StatusError()
+			httper.V(vars).SetMessageString(getErrorString(rec))
 		}
 	}()
 	next()

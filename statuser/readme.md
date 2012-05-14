@@ -16,8 +16,9 @@ __main.go__
 	import (
 		"github.com/HairyMezican/Middleware/encapsulator"
 		"github.com/HairyMezican/Middleware/statuser"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheRack/templater"
+		"github.com/HairyMezican/TheTemplater/templater"
 	)
 
 	func main() {
@@ -27,9 +28,10 @@ __main.go__
 		rackup.Add(encapsulator.AddLayout)
 		rackup.Add(statuser.SetErrorLayout)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
+	
 	
 __templates/layouts/404.tmpl__
 
@@ -53,13 +55,15 @@ __main.go__
 	import (
 		"github.com/HairyMezican/Middleware/encapsulator"
 		"github.com/HairyMezican/Middleware/statuser"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheRack/templater"
+		"github.com/HairyMezican/TheTemplater/templater"
 	)
 
-	var ErrorWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.StatusError(vars)
-		rack.SetMessageString(vars, "An unknown error has occurred")
+	var ErrorWare rack.Func = func(vars map[string]interface{}, next func()) {
+		v := httper.V(vars)
+		v.StatusError()
+		v.SetMessageString("An unknown error has occurred")
 	}
 
 	func main() {
@@ -70,7 +74,7 @@ __main.go__
 		rackup.Add(statuser.SetErrorLayout)
 		rackup.Add(ErrorWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

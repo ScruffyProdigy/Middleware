@@ -1,6 +1,7 @@
 package sessioner
 
 import (
+	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
 )
 
@@ -13,8 +14,8 @@ const (
 	Middleware is the Middleware function that inserts a Session variable as "Session" into Rack variables
 	This allows all later Middleware to have persistent effects
 */
-var Middleware rack.Func = func(vars rack.Vars, next func()) {
-	r := rack.GetRequest(vars)
+var Middleware rack.Func = func(vars map[string]interface{}, next func()) {
+	r := (httper.V)(vars).GetRequest()
 
 	session := get(r)
 	vars[sessionIndex] = Session(session)
@@ -27,29 +28,31 @@ var Middleware rack.Func = func(vars rack.Vars, next func()) {
 
 	next()
 
-	w := rack.CreateResponse(vars)
+	w := (httper.V)(vars).FilledResponse()
 	session.save(w)
 	w.Save()
 }
 
-func Set(vars rack.Vars, k, v interface{}) {
+type V map[string] interface{}
+
+func (vars V) Set(k, v interface{}) {
 	vars[sessionIndex].(Session).Set(k, v)
 }
 
-func Get(vars rack.Vars, k interface{}) interface{} {
+func (vars V) Get(k interface{}) interface{} {
 	return vars[sessionIndex].(Session).Get(k)
 }
 
-func Clear(vars rack.Vars, k interface{}) interface{} {
+func (vars V) Clear(k interface{}) interface{} {
 	return vars[sessionIndex].(Session).Clear(k)
 }
 
-func AddFlash(vars rack.Vars, s string) {
-	a, isStrings := Get(vars, "flash").([]string)
+func (vars V) AddFlash(s string) {
+	a, isStrings := vars.Get( "flash").([]string)
 	if !isStrings {
 		a = []string{s}
 	} else {
 		a = append(a, s)
 	}
-	Set(vars, "flash", a)
+	vars.Set("flash", a)
 }

@@ -2,31 +2,28 @@ package redirecter
 
 import (
 	"github.com/HairyMezican/Middleware/logger"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"net/http"
 )
 
 type Redirecter struct {
-	Apply []rack.VarFunc
 	Path  string
 }
 
-func (this Redirecter) Run(vars rack.Vars, next func()) {
-	Redirect(vars, this.Path, this.Apply...)
+func (this Redirecter) Run(vars map[string]interface{}, next func()) {
+	V(vars).Redirect(this.Path)
 }
 
-func Redirect(vars rack.Vars, path string, apply ...rack.VarFunc) {
-	info := logger.Get(vars)
+type V map[string]interface{}
+
+func (vars V) Redirect(path string) {
+	info := (logger.V)(vars).Get()
 	if info != nil {
 		info.Println("Redirecting to " + path)
 	}
 
-	for _, a := range apply {
-		vars.Apply(a)
-	}
-
-	r := rack.GetRequest(vars)
-	w := rack.BlankResponse(vars)
+	r := (httper.V)(vars).GetRequest()
+	w := (httper.V)(vars).BlankResponse()
 	http.Redirect(w, r, path, http.StatusFound)
 	w.Save()
 }

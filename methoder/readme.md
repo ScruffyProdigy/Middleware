@@ -14,16 +14,19 @@ The form values need to be parsed before this is ran, so a middleware such as pa
 	import (
 		"github.com/HairyMezican/Middleware/methoder"
 		"github.com/HairyMezican/Middleware/parser"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 	)
 
-	var HttpWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessageString(vars, "<html><head><title>Form!</title></head><body>")
-		request := rack.GetRequest(vars)
-		rack.AppendMessageString(vars, "<p>You used "+request.Method+"</p>")
-		rack.AppendMessageString(vars, "<form action='/' method='post'><input type='hidden' name='_method' value='put' /><input type='submit' value='put'/></form>")
-		rack.AppendMessageString(vars, "<form action='/' method='post'><input type='submit' value='post'/></form>")
-		rack.AppendMessageString(vars, "<form action='/' method='post'><input type='hidden' name='_method' value='delete' /><input type='submit' value='delete'/></form>")
+	var HttpWare rack.Func = func(vars map[string]interface{}, next func()) {
+		v := httper.V(vars)
+
+		v.SetMessageString("<html><head><title>Form!</title></head><body>")
+		request := v.GetRequest()
+		v.AppendMessageString("<p>You used " + request.Method + "</p>")
+		v.AppendMessageString("<form action='/' method='post'><input type='hidden' name='_method' value='put' /><input type='submit' value='put'/></form>")
+		v.AppendMessageString("<form action='/' method='post'><input type='submit' value='post'/></form>")
+		v.AppendMessageString("<form action='/' method='post'><input type='hidden' name='_method' value='delete' /><input type='submit' value='delete'/></form>")
 	}
 
 	func main() {
@@ -32,7 +35,7 @@ The form values need to be parsed before this is ran, so a middleware such as pa
 		rackup.Add(methoder.Override)
 		rackup.Add(HttpWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

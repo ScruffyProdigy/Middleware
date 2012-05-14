@@ -13,23 +13,26 @@ This uses the Gorilla Session module to implement sessions (code.google.com/p/go
 
 	import (
 		"github.com/HairyMezican/Middleware/sessioner"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 		"fmt"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
-		times, ok := sessioner.Get(vars, "times").(int)
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
+		s := (sessioner.V)(vars)
+		times, ok := s.Get("times").(int)
 		if !ok {
 			times = 0
 		}
 
-		sessioner.Set(vars, "times", times+1)
+		s.Set("times", times+1)
 
-		rack.SetMessageString(vars, fmt.Sprint("You have been here ", times, " time"))
+		h := httper.V(vars)
+		h.SetMessageString(fmt.Sprint("You have been here ", times, " time"))
 		if times != 1 {
-			rack.AppendMessageString(vars, "s before")
+			h.AppendMessageString("s before")
 		} else {
-			rack.AppendMessageString(vars, " before")
+			h.AppendMessageString(" before")
 		}
 	}
 
@@ -38,7 +41,7 @@ This uses the Gorilla Session module to implement sessions (code.google.com/p/go
 		rackup.Add(sessioner.Middleware)
 		rackup.Add(HelloWorldWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

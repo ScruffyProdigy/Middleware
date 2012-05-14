@@ -11,17 +11,19 @@ It also provides a more direct function that another middleware can call directl
 
 	import (
 		"github.com/HairyMezican/Middleware/redirecter"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 	)
 
-	var GithubWare rack.Func = func(vars rack.Vars, next func()) {
-		redirecter.Redirect(vars, "http://github.com/HairyMezican")
+	var GithubWare rack.Func = func(vars map[string]interface{}, next func()) {
+		(redirecter.V)(vars).Redirect("http://github.com/HairyMezican")
 	}
 
 	func main() {
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(GithubWare)
 	}
+	
 
 Running this, and going to localhost:3000 should redirect you to my github page
 The following code would do the same thing:
@@ -30,11 +32,11 @@ The following code would do the same thing:
 
 	import (
 		"github.com/HairyMezican/Middleware/redirecter"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/HairyMezican/TheRack/httper"
 	)
 
 	func main() {
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(redirecter.Redirecter{Path: "http://github.com/HairyMezican"})
 	}
 	

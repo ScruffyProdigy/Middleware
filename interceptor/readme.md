@@ -9,16 +9,17 @@ This is a lightweight routing system that uses a simple lookup on the request UR
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/Middleware/interceptor"
-		"github.com/HairyMezican/Middleware/TheRack/rack"
+		"github.com/HairyMezican/Middleware/interceptor"
+		"github.com/HairyMezican/TheRack/httper"
+		"github.com/HairyMezican/TheRack/rack"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessageString(vars, "Hello World")
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
+		(httper.V)(vars).SetMessageString("Hello World")
 	}
 
-	var RootWare rack.Func = func(vars rack.Vars, next func()) {
-		rack.SetMessageString(vars, "<html>Check out my <a href=\"/helloworld\">Hello World</a></html>")
+	var RootWare rack.Func = func(vars map[string]interface{}, next func()) {
+		(httper.V)(vars).SetMessageString("<html>Check out my <a href=\"/helloworld\">Hello World</a></html>")
 	}
 
 	func main() {
@@ -30,7 +31,7 @@ This is a lightweight routing system that uses a simple lookup on the request UR
 		rackup.Add(cept)
 		rackup.Add(HelloWorldWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	

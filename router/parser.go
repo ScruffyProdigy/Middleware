@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/HairyMezican/TheRack/httper"
 	"strings"
 )
 
@@ -17,8 +17,10 @@ const (
 	later middleware will use it to direct control
 */
 
-func Parse(vars rack.Vars) []string {
-	r := rack.GetRequest(vars)
+type V map[string]interface{}
+
+func (vars V) Parse() []string {
+	r := (httper.V)(vars).GetRequest()
 	parsedRoute := strings.Split(r.URL.Path, "/")
 	newParsedRoute := make([]string, 0, len(parsedRoute)+1)
 	for _, section := range parsedRoute {
@@ -33,10 +35,10 @@ func Parse(vars rack.Vars) []string {
 	return newParsedRoute
 }
 
-func CurrentSection(vars rack.Vars) string {
+func (vars V) CurrentSection() string {
 	parsedRoute, ok := vars[parsedRouteIndex].([]string)
 	if !ok {
-		parsedRoute = Parse(vars)
+		parsedRoute = V(vars).Parse()
 	}
 
 	index, ok := vars[currentSectionIndex].(int)
@@ -50,14 +52,14 @@ func CurrentSection(vars rack.Vars) string {
 
 	result := parsedRoute[index]
 
-	if !IsCaseSensitive(vars) {
+	if !V(vars).IsCaseSensitive() {
 		result = strings.ToLower(result)
 	}
 
 	return result
 }
 
-func nextSection(vars rack.Vars) {
+func (vars V) nextSection() {
 	index, ok := vars[currentSectionIndex].(int)
 	if !ok {
 		index = 0
@@ -65,7 +67,7 @@ func nextSection(vars rack.Vars) {
 	vars[currentSectionIndex] = index + 1
 }
 
-func IsCaseSensitive(vars rack.Vars) bool {
+func (vars V) IsCaseSensitive() bool {
 	result, ok := vars[caseSensitiveIndex].(bool)
 
 	if ok && result {
@@ -74,10 +76,10 @@ func IsCaseSensitive(vars rack.Vars) bool {
 	return false
 }
 
-func SetCaseSensitive(vars rack.Vars) {
+func (vars V) SetCaseSensitive() {
 	vars[caseSensitiveIndex] = true
 }
 
-func SetCaseInsensitive(vars rack.Vars) {
+func (vars V) SetCaseInsensitive() {
 	vars[caseSensitiveIndex] = false
 }

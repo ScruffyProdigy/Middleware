@@ -11,10 +11,11 @@ Previous Middleware are typically used to filter the error into something more p
 
 	import (
 		"github.com/HairyMezican/Middleware/errorhandler"
+		"github.com/HairyMezican/TheRack/httper"
 		"github.com/HairyMezican/TheRack/rack"
 	)
 
-	var HelloWorldWare rack.Func = func(vars rack.Vars, next func()) {
+	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
 		array := make([]byte, 0)
 		array[1] = 0 //this action results in a runtime error; we are indexing past the range of the slice
 	}
@@ -24,7 +25,7 @@ Previous Middleware are typically used to filter the error into something more p
 		rackup.Add(errorhandler.ErrorHandler)
 		rackup.Add(HelloWorldWare)
 
-		conn := rack.HttpConnection(":3000")
+		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
 	
