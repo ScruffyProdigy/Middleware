@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
+	"strings"
 )
 
 const (
@@ -33,7 +34,7 @@ type Middleware struct {
 
 func (this Middleware) Run(vars map[string]interface{}, next func()) {
 	r := (httper.V)(vars).GetRequest()
-	if r.Header.Get("Upgrade") != "WebSocket" {
+	if strings.ToLower(r.Header.Get("Upgrade")) != "websocket" {
 		//if it wasn't a websocket request, ignore it
 		next()
 	} else {
@@ -63,8 +64,8 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 
 					//If we have a response, send it back
 					response := vars[responseIndex]
-					delete(vars,responseIndex)
-					
+					delete(vars, responseIndex)
+
 					if response != nil {
 						this.messageType.Send(ws, response)
 					}
