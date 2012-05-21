@@ -48,11 +48,11 @@ func (vars V) Clear(k interface{}) interface{} {
 }
 
 func (vars V) AddFlash(s string) {
-	a, isStrings := vars.Get( "flash").([]string)
+	a, isStrings := vars.Get(flashesIndex).([]string)
 	if !isStrings {
 		a = []string{s}
 	} else {
 		a = append(a, s)
 	}
-	vars.Set("flash", a)
+	vars.Set(flashesIndex, a)
 }
