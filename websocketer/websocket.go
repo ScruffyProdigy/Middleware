@@ -78,11 +78,11 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 	}
 }
 
-func (this Middleware) UseJSON() {
+func (this *Middleware) UseJSON() {
 	this.messageType = websocket.JSON
 }
 
-func (this Middleware) UseMessage() {
+func (this *Middleware) UseMessage() {
 	this.messageType = websocket.Message
 }
 
@@ -98,7 +98,7 @@ func (this Middleware) OnClose(m rack.Middleware) {
 	this.onClose.Add(m)
 }
 
-func (this Middleware) OnStorage(f func() interface{}) {
+func (this *Middleware) OnStorage(f func() interface{}) {
 	this.onStorage = f
 }
 
