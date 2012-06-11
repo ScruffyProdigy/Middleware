@@ -1,7 +1,9 @@
 package websocketer
 
 import (
+	"io"
 	"code.google.com/p/go.net/websocket"
+	"github.com/HairyMezican/Middleware/logger"
 	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
 	"strings"
@@ -51,10 +53,17 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 				//Get the message from the client
 				message := this.onStorage()
 				err := this.messageType.Receive(ws, message)
-
 				//If there are no messages, we're done here
 				if err != nil {
-					break
+					if err != io.EOF {
+						lg := (logger.V)(vars).Get()
+						if lg != nil {
+							lg.Println(err)
+						}
+						continue
+					} else {
+						break
+					}
 				}
 
 				//respond to the message in a goroutine
@@ -121,10 +130,14 @@ func (vars V) SendJSONMessage(message interface{}) {
 }
 
 func (vars V) sendmessage(message interface{}, c websocket.Codec) {
+	ws := vars.GetSocket()
+	c.Send(ws, message)
+}
+
+func (vars V) GetSocket() *websocket.Conn {
 	ws, ok := vars[websocketIndex].(*websocket.Conn)
 	if !ok {
 		panic("Can't find websocket")
 	}
-
-	c.Send(ws, message)
+	return ws
 }
