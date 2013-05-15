@@ -13,7 +13,7 @@ func (this Renderer) Run(vars map[string]interface{}, next func()) {
 	V(vars).Render(this.Template)
 }
 
-type V map[string] interface{}
+type V map[string]interface{}
 
 func (vars V) Render(s string) {
 	w := httper.V(vars).BlankResponse()

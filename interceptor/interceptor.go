@@ -4,8 +4,8 @@
 package interceptor
 
 import (
-	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheRack/httper"
+	"github.com/HairyMezican/TheRack/rack"
 )
 
 type PreExistingInterceptorError struct {

@@ -1,12 +1,12 @@
 package encapsulator
 
 import (
+	"fmt"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
 	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"io/ioutil"
 	"net/http"
-	"fmt"
 )
 
 var templates = templater.New("./test_templates")
@@ -28,7 +28,6 @@ func GetFrom(loc string) {
 	fmt.Println(string(body))
 }
 
-
 func Example_Basic() {
 	rackup := rack.New()
 	rackup.Add(AddLayout(templates))
@@ -40,7 +39,7 @@ func Example_Basic() {
 
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3000/")
 	//output: <html><head><title>Hello World</title></head><body>Hello World!</body></html>
 }
@@ -52,10 +51,10 @@ func Example_NoLayout() {
 		vars["Title"] = "Hello World"
 		(httper.V)(vars).AppendMessageString("Hello World!")
 	}))
-	
+
 	conn := httper.HttpConnection(":3001")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3001/")
 	//output: Hello World!
 }
@@ -68,10 +67,10 @@ func Example_BadLayout() {
 		vars["Title"] = "Hello World"
 		(httper.V)(vars).AppendMessageString("Hello World!")
 	}))
-	
+
 	conn := httper.HttpConnection(":3002")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3002/")
 	//output: Hello World!
 }

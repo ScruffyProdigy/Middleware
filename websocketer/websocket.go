@@ -1,11 +1,11 @@
 package websocketer
 
 import (
-	"io"
 	"code.google.com/p/go.net/websocket"
 	"github.com/HairyMezican/Middleware/logger"
 	"github.com/HairyMezican/TheRack/httper"
 	"github.com/HairyMezican/TheRack/rack"
+	"io"
 	"strings"
 )
 

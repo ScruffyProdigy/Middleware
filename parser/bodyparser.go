@@ -19,7 +19,7 @@ func (this Multipart) Run(vars map[string]interface{}, next func()) {
 	next()
 }
 
-type V map[string] interface{}
+type V map[string]interface{}
 
 func (vars V) Parse() {
 	r := (httper.V)(vars).GetRequest()

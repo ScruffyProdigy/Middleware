@@ -1,8 +1,8 @@
 package methoder
 
 import (
-	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheRack/httper"
+	"github.com/HairyMezican/TheRack/rack"
 	"strings"
 )
 

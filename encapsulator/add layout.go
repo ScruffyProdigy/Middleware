@@ -27,11 +27,11 @@ func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 		logger.V(vars).Println("Layout not set")
 		return
 	}
-	
+
 	L := this.Templates.Get(this.Folder + "/" + layout)
 	if L == nil {
 		//still no layout, just let it through
-		logger.V(vars).Println("Layout \""+layout+"\" not found")
+		logger.V(vars).Println("Layout \"" + layout + "\" not found")
 		return
 	}
 

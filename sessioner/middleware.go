@@ -33,7 +33,7 @@ var Middleware rack.Func = func(vars map[string]interface{}, next func()) {
 	w.Save()
 }
 
-type V map[string] interface{}
+type V map[string]interface{}
 
 func (vars V) Set(k, v interface{}) {
 	vars[sessionIndex].(Session).Set(k, v)

@@ -7,7 +7,7 @@ import (
 )
 
 type Redirecter struct {
-	Path  string
+	Path string
 }
 
 func (this Redirecter) Run(vars map[string]interface{}, next func()) {

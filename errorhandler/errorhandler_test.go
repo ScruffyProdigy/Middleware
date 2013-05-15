@@ -1,11 +1,11 @@
 package errorhandler
 
 import (
+	"fmt"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
 	"io/ioutil"
 	"net/http"
-	"fmt"
 )
 
 func GetFrom(loc string) {
@@ -25,7 +25,6 @@ func GetFrom(loc string) {
 	fmt.Println(string(body))
 }
 
-
 func Example_BasicError() {
 	rackup := rack.New()
 	rackup.Add(ErrorHandler)
@@ -37,7 +36,7 @@ func Example_BasicError() {
 
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3000/")
 	//output: runtime error: index out of range
 }
@@ -49,10 +48,10 @@ func Example_StringError() {
 		httper.V(vars).SetMessageString("Just Fine!")
 		panic("Error!")
 	}))
-	
+
 	conn := httper.HttpConnection(":3001")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3001/")
 	//output: Error!
 }
@@ -63,10 +62,10 @@ func Example_NoError() {
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		httper.V(vars).SetMessageString("Just Fine!")
 	}))
-	
+
 	conn := httper.HttpConnection(":3002")
 	go conn.Go(rackup)
-	
+
 	GetFrom("http://localhost:3002/")
 	//output: Just Fine!
 }

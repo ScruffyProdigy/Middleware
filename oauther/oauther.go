@@ -10,8 +10,8 @@ import (
 	"github.com/HairyMezican/Middleware/interceptor"
 	"github.com/HairyMezican/Middleware/redirecter"
 	"github.com/HairyMezican/Middleware/sessioner"
-	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheRack/httper"
+	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/goauth2/oauth"
 	"net/http"
 )

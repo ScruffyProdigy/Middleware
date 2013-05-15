@@ -23,7 +23,7 @@ func Set(out io.Writer, prefix string, flag int) Logger {
 	return Logger{log.New(out, prefix, flag)}
 }
 
-type V map[string] interface{}
+type V map[string]interface{}
 
 func (vars V) Get() *log.Logger {
 	result, ok := vars["Logger"].(*log.Logger)
@@ -43,7 +43,7 @@ func (vars V) Print(v ...interface{}) {
 func (vars V) Printf(format string, v ...interface{}) {
 	l := vars.Get()
 	if l != nil {
-		l.Printf(format,v...)
+		l.Printf(format, v...)
 	}
 }
 
