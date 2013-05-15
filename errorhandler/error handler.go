@@ -6,18 +6,16 @@ package errorhandler
 import (
 	"github.com/HairyMezican/TheRack/rack"
 	"github.com/HairyMezican/TheRack/httper"
+	"fmt"
 )
 
 func getErrorString(rec interface{}) string {
 	err, isError := rec.(error)
-	str, isString := rec.(string)
 
 	if isError {
 		return err.Error()
-	} else if isString {
-		return str
 	}
-	return "Unknown Error"
+	return fmt.Sprint(rec)
 }
 
 var ErrorHandler rack.Func = func(vars map[string]interface{}, next func()) {

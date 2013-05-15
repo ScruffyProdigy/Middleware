@@ -1,15 +1,12 @@
-package encapsulator
+package errorhandler
 
 import (
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"io/ioutil"
 	"net/http"
 	"fmt"
 )
-
-var templates = templater.New("./test_templates")
 
 func GetFrom(loc string) {
 	resp, err := http.Get(loc)
@@ -29,49 +26,47 @@ func GetFrom(loc string) {
 }
 
 
-func Example_Basic() {
+func Example_BasicError() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(ErrorHandler)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
-		vars["Layout"] = "test"
-		vars["Title"] = "Hello World"
-		(httper.V)(vars).AppendMessageString("Hello World!")
+		httper.V(vars).SetMessageString("Just Fine!")
+		array := make([]byte, 0)
+		array[1] = 0 //this action results in a runtime error; we are indexing past the range of the slice
 	}))
 
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
 	
 	GetFrom("http://localhost:3000/")
-	//output: <html><head><title>Hello World</title></head><body>Hello World!</body></html>
+	//output: runtime error: index out of range
 }
 
-func Example_NoLayout() {
+func Example_StringError() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(ErrorHandler)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
-		vars["Title"] = "Hello World"
-		(httper.V)(vars).AppendMessageString("Hello World!")
+		httper.V(vars).SetMessageString("Just Fine!")
+		panic("Error!")
 	}))
 	
 	conn := httper.HttpConnection(":3001")
 	go conn.Go(rackup)
 	
 	GetFrom("http://localhost:3001/")
-	//output: Hello World!
+	//output: Error!
 }
 
-func Example_BadLayout() {
+func Example_NoError() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(ErrorHandler)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
-		vars["Layout"] = "invalid"
-		vars["Title"] = "Hello World"
-		(httper.V)(vars).AppendMessageString("Hello World!")
+		httper.V(vars).SetMessageString("Just Fine!")
 	}))
 	
 	conn := httper.HttpConnection(":3002")
 	go conn.Go(rackup)
 	
 	GetFrom("http://localhost:3002/")
-	//output: Hello World!
+	//output: Just Fine!
 }
