@@ -33,4 +33,25 @@ func (vars V) Get() *log.Logger {
 	return result
 }
 
+func (vars V) Print(v ...interface{}) {
+	l := vars.Get()
+	if l != nil {
+		l.Print(v...)
+	}
+}
+
+func (vars V) Printf(format string, v ...interface{}) {
+	l := vars.Get()
+	if l != nil {
+		l.Printf(format,v...)
+	}
+}
+
+func (vars V) Println(v ...interface{}) {
+	l := vars.Get()
+	if l != nil {
+		l.Println(v...)
+	}
+}
+
 var StandardLogger = Set(os.Stdout, "", log.LstdFlags)

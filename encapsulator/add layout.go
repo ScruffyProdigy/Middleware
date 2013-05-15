@@ -1,17 +1,18 @@
 package encapsulator
 
 import (
-	"github.com/HairyMezican/Middleware/logger"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheTemplater/templater"
+	"../logger"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"html/template"
 )
 
 /*
-	Encapsulator is a Middleware to be used with templater
-	it will encapsulate the current body, within a specified template
+	Encapsulator is a Middleware that uses TheTemplater to help create Layouts for your websites
+	it will take the current body, and place it in the middle of a layou
 */
 type Encapsulator struct {
+	Templates *templater.Group
 	LayoutVar string //the variable this will look for to find the layout
 	BodyVar   string //the variable this will set the old body into that the layout should look for to reapply
 	Folder    string //the folder to look for the layouts in
@@ -23,27 +24,21 @@ func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	layout, hasLayout := vars[this.LayoutVar].(string)
 	if !hasLayout {
 		//no "layout", just let it through
+		logger.V(vars).Println("Layout not set")
+		return
+	}
+	
+	L := this.Templates.Get(this.Folder + "/" + layout)
+	if L == nil {
+		//still no layout, just let it through
+		logger.V(vars).Println("Layout \""+layout+"\" not found")
 		return
 	}
 
 	vars[this.BodyVar] = template.HTML(httper.V(vars).ResetMessage())
+
 	w := httper.V(vars).FilledResponse()
-
-	L, err := templater.Get(this.Folder + "/" + layout)
-	if err != nil {
-		//layout not found
-		//either log the error and let it through, or panic
-		l := logger.V(vars).Get()
-		if l != nil {
-			l.Println(err.Error())
-			return
-		} else {
-			panic(err)
-		}
-	}
-
 	L.Execute(w, vars)
-
 	w.Save()
 }
 
@@ -53,4 +48,6 @@ func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	It will encapsulate the current body, within whichever template is in the "Layout" variable
 	The layout will be found in the "layouts" folder, and will use {{.Body}} to specify the old body
 */
-var AddLayout = Encapsulator{LayoutVar: "Layout", BodyVar: "Body", Folder: "layouts"}
+func AddLayout(t *templater.Group) *Encapsulator {
+	return &Encapsulator{Templates: t, LayoutVar: "Layout", BodyVar: "Body", Folder: "layouts"}
+}
