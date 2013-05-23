@@ -2,16 +2,16 @@
 This is a lightweight routing system that uses a simple lookup on the request URL to route the request to a different middleware.  If none is found, the request passes right through this Middleware.  Please note that "/users" is considered different than "/users/" for the purpose of this middleware.  This is mostly used for APIs
 
 ## Installation
-`go get github.com/HairyMezican/Middleware/interceptor`
+`go get github.com/ScruffyProdigy/Middleware/interceptor`
 
 ## Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/interceptor"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/interceptor"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
@@ -24,12 +24,11 @@ This is a lightweight routing system that uses a simple lookup on the request UR
 
 	func main() {
 		cept := interceptor.New()
-		cept.Intercept("/", RootWare)
 		cept.Intercept("/helloworld", HelloWorldWare)
 
 		rackup := rack.New()
 		rackup.Add(cept)
-		rackup.Add(HelloWorldWare)
+		rackup.Add(RootWare)
 
 		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)

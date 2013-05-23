@@ -1,8 +1,8 @@
 package redirecter
 
 import (
-	"github.com/HairyMezican/Middleware/logger"
-	"github.com/HairyMezican/TheRack/httper"
+	"github.com/ScruffyProdigy/Middleware/logger"
+	"github.com/ScruffyProdigy/TheRack/httper"
 	"net/http"
 )
 

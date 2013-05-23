@@ -3,20 +3,20 @@ This is a simple redirection middleware that will send down a http.StatusFound r
 It also provides a more direct function that another middleware can call directly
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/redirecter`
+`go get github.com/ScruffyProdigy/Middleware/redirecter`
 
 ## 	Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/redirecter"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/redirecter"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 	)
 
 	var GithubWare rack.Func = func(vars map[string]interface{}, next func()) {
-		(redirecter.V)(vars).Redirect("http://github.com/HairyMezican")
+		(redirecter.V)(vars).Redirect("http://github.com/ScruffyProdigy")
 	}
 
 	func main() {
@@ -31,12 +31,12 @@ The following code would do the same thing:
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/redirecter"
-		"github.com/HairyMezican/TheRack/httper"
+		"github.com/ScruffyProdigy/Middleware/redirecter"
+		"github.com/ScruffyProdigy/TheRack/httper"
 	)
 
 	func main() {
 		conn := httper.HttpConnection(":3000")
-		conn.Go(redirecter.Redirecter{Path: "http://github.com/HairyMezican"})
+		conn.Go(redirecter.Redirecter{Path: "http://github.com/ScruffyProdigy"})
 	}
 	

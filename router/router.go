@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/ScruffyProdigy/TheRack/rack"
 )
 
 type Router struct {

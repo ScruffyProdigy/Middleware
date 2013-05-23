@@ -3,16 +3,16 @@ This is used to trap uncaught errors from future middleware and return a 500 Int
 Previous Middleware are typically used to filter the error into something more presentable, and/or report the error to your error tracking service
 
 ## Installation
-`go get github.com/HairyMezican/Middleware/errorhandler`
+`go get github.com/ScruffyProdigy/Middleware/errorhandler`
 
 ## Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/errorhandler"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/errorhandler"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {

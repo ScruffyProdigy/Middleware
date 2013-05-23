@@ -2,25 +2,22 @@
 This is used to set a logger that all other middleware will have access to
 
 ## Installation
-`go get github.com/HairyMezican/Middleware/logger`
+`go get github.com/ScruffyProdigy/Middleware/logger`
 
 ## Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/logger"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/logger"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 		"log"
 		"os"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
-		lg := (logger.V)(vars).Get()
-		if lg != nil {
-			lg.Println("Hello World!")
-		}
+		(logger.V)(vars).Println("Hello World!")
 		(httper.V)(vars).SetMessageString("Hello World!")
 	}
 

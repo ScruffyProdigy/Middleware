@@ -3,10 +3,10 @@ This is middleware simply renders a template and returns a http.StatusOK
 It also provides a more direct function so that another Middleware can render the template instead
 
 ## 	Dependencies
-This uses templates from TheTemplater to simplify rendering	(github.com/HairyMezican/TheTemplater)
+This uses templates from TheTemplater to simplify rendering	(github.com/ScruffyProdigy/TheTemplater)
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/renderer`
+`go get github.com/ScruffyProdigy/Middleware/renderer`
 
 ## 	Example
 
@@ -15,10 +15,10 @@ __main.go__
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/renderer"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/ScruffyProdigy/Middleware/renderer"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
@@ -51,10 +51,10 @@ Running this will display an HTML file with the text "Hello World" in both the t
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/renderer"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/ScruffyProdigy/Middleware/renderer"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {

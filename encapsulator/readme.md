@@ -2,11 +2,11 @@
 This is mostly used to add a layout to the output of future middleware
 
 ## 	Dependencies
-1.	This uses TheTemplater for access to the templates (github.com/HairyMezican/TheTemplater)
-2. 	This tries to use the Logger Middleware to report any problems (github.com/HairyMezican/Middleware/logger)
+1.	This uses TheTemplater for access to the templates (github.com/ScruffyProdigy/TheTemplater)
+2. 	This tries to use the Logger Middleware to report any problems (github.com/ScruffyProdigy/Middleware/logger)
 
 ##	Installation
-`go get github.com/HairyMezican/Middleware/encapsulator`
+`go get github.com/ScruffyProdigy/Middleware/encapsulator`
 
 ## Example
 
@@ -15,10 +15,10 @@ __main.go__
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/encapsulator"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/ScruffyProdigy/Middleware/encapsulator"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {

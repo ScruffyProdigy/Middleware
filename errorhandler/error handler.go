@@ -5,8 +5,8 @@ package errorhandler
 
 import (
 	"fmt"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 )
 
 func getErrorString(rec interface{}) string {

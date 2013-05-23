@@ -1,6 +1,6 @@
 #Middleware
 
-These are middleware that are each designed to be part of a Rack specified in https://github.com/HairyMezican/TheRack
+These are middleware that are each designed to be part of a Rack specified in https://github.com/ScruffyProdigy/TheRack
 Look at the documentation in each folder for more information about how they are used
 
 *	**encapsulator** - Typically used to wrap the current body in a layout  
@@ -18,4 +18,4 @@ Look at the documentation in each folder for more information about how they are
 *	**websocketer** - provides an rack-based interface for websockets
 
 ##Installation
-You can install them all by simply running `go get github.com/HairyMezican/Middleware/...`
+You can install them all by simply running `go get github.com/ScruffyProdigy/Middleware/...`

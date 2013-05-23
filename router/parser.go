@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/HairyMezican/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/httper"
 	"strings"
 )
 

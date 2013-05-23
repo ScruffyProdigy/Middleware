@@ -2,16 +2,16 @@
 This provides a branching based router that goes through every directory specified in the requested url and finds a subrouter until it gets to the end, then calls whichever middleware is associated with the last subrouter found
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/routes`
+`go get github.com/ScruffyProdigy/Middleware/routes`
 
 ## 	Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/router"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/router"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 		"strings"
 	)
 

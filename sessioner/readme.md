@@ -5,16 +5,16 @@ This middleware loads a session for any future middleware, and then saves the se
 This uses the Gorilla Session module to implement sessions (code.google.com/p/gorilla/sessions)
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/sessioner`
+`go get github.com/ScruffyProdigy/Middleware/sessioner`
 
 ## 	Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/sessioner"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/sessioner"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 		"fmt"
 	)
 

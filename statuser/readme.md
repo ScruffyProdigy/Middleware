@@ -1,11 +1,11 @@
 #	Statuser
-This Middleware looks at the HTTP status code sent down from future Middleware, and looks through the available templates to set an appropriate one.  This is typically used with Encapsulator (github.com/HairyMezican/Middleware/encapsulator) to actually apply the template
+This Middleware looks at the HTTP status code sent down from future Middleware, and looks through the available templates to set an appropriate one.  This is typically used with Encapsulator (github.com/ScruffyProdigy/Middleware/encapsulator) to actually apply the template
 
 ## 	Dependencies
-This uses TheTemplater to figure out which templates are available (github.com/HairyMezican/TheTemplater)
+This uses TheTemplater to figure out which templates are available (github.com/ScruffyProdigy/TheTemplater)
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/statuser`
+`go get github.com/ScruffyProdigy/Middleware/statuser`
 
 ## 	Example
 
@@ -14,11 +14,11 @@ __main.go__
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/encapsulator"
-		"github.com/HairyMezican/Middleware/statuser"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/ScruffyProdigy/Middleware/encapsulator"
+		"github.com/ScruffyProdigy/Middleware/statuser"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	func main() {
@@ -53,11 +53,11 @@ __main.go__
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/encapsulator"
-		"github.com/HairyMezican/Middleware/statuser"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/TheTemplater/templater"
+		"github.com/ScruffyProdigy/Middleware/encapsulator"
+		"github.com/ScruffyProdigy/Middleware/statuser"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var ErrorWare rack.Func = func(vars map[string]interface{}, next func()) {

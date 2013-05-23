@@ -2,16 +2,16 @@
 Parser is a simple body parsing middleware that will parse a URL or Form, and store it in the request
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/parser`
+`go get github.com/ScruffyProdigy/Middleware/parser`
 
 ## 	Example
 
     package main
 
 	import (
-		"github.com/HairyMezican/Middleware/parser"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/parser"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 	)
 
 	var HttpWare rack.Func = func(vars map[string]interface{}, next func()) {

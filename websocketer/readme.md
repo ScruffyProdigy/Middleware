@@ -5,17 +5,17 @@ Websocketer provides a simple rack based interface for starting up a websocket, 
 This uses google's Websocket code
 
 ## 	Installation
-`go get github.com/HairyMezican/Middleware/websocketer`
+`go get github.com/ScruffyProdigy/Middleware/websocketer`
 
 ## 	Example
 
     package main
 
 	import (
-		"github.com/HairyMezican/Middleware/logger"
-		"github.com/HairyMezican/Middleware/websocketer"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
+		"github.com/ScruffyProdigy/Middleware/logger"
+		"github.com/ScruffyProdigy/Middleware/websocketer"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
 	)
 
 	var OpenWare rack.Func = func(vars map[string]interface{}, next func()) {

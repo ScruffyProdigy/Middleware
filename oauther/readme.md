@@ -2,25 +2,25 @@
 This defines an interface for you to use for an OAuth provider, then takes that interface, and converts it into a Rack Middleware based system.  
 
 ## Dependencies
-1.	It needs the session middleware to be inserted before it (github.com/HairyMezican/Middleware/session)
-2.	It needs an interceptor to define it's routes (github.com/HairyMezican/Middleware/interceptor)
-3.	It uses my adaptation of goauth2 to implement the oauth protocol (github.com/HairyMezican/goauth2/oauth)
+1.	It needs the session middleware to be inserted before it (github.com/ScruffyProdigy/Middleware/session)
+2.	It needs an interceptor to define it's routes (github.com/ScruffyProdigy/Middleware/interceptor)
+3.	It uses my adaptation of goauth2 to implement the oauth protocol (github.com/ScruffyProdigy/goauth2/oauth)
 
 ## Installation
-`go get github.com/HairyMezican/Middleware/oauther/...`
+`go get github.com/ScruffyProdigy/Middleware/oauther/...`
 
 ## Example
 
 	package main
 
 	import (
-		"github.com/HairyMezican/Middleware/interceptor"
-		"github.com/HairyMezican/Middleware/oauther"
-		"github.com/HairyMezican/Middleware/oauther/facebooker"
-		"github.com/HairyMezican/Middleware/sessioner"
-		"github.com/HairyMezican/TheRack/httper"
-		"github.com/HairyMezican/TheRack/rack"
-		"github.com/HairyMezican/goauth2/oauth"
+		"github.com/ScruffyProdigy/Middleware/interceptor"
+		"github.com/ScruffyProdigy/Middleware/oauther"
+		"github.com/ScruffyProdigy/Middleware/oauther/facebooker"
+		"github.com/ScruffyProdigy/Middleware/sessioner"
+		"github.com/ScruffyProdigy/TheRack/httper"
+		"github.com/ScruffyProdigy/TheRack/rack"
+		"github.com/ScruffyProdigy/goauth2/oauth"
 		"encoding/json"
 		"net/http"
 	)

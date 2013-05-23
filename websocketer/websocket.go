@@ -2,9 +2,9 @@ package websocketer
 
 import (
 	"code.google.com/p/go.net/websocket"
-	"github.com/HairyMezican/Middleware/logger"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/ScruffyProdigy/Middleware/logger"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 	"io"
 	"strings"
 )

@@ -5,14 +5,14 @@
 package oauther
 
 import (
+	"code.google.com/p/goauth2/oauth"
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/HairyMezican/Middleware/interceptor"
-	"github.com/HairyMezican/Middleware/redirecter"
-	"github.com/HairyMezican/Middleware/sessioner"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheRack/rack"
-	"github.com/HairyMezican/goauth2/oauth"
+	"github.com/ScruffyProdigy/Middleware/interceptor"
+	"github.com/ScruffyProdigy/Middleware/redirecter"
+	"github.com/ScruffyProdigy/Middleware/sessioner"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 	"net/http"
 )
 
