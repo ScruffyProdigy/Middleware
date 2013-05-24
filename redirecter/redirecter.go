@@ -1,3 +1,6 @@
+/*
+redirecter makes it simple to redirect the user to another url - either as a middleware, or a vars operation
+*/
 package redirecter
 
 import (
@@ -6,6 +9,9 @@ import (
 	"net/http"
 )
 
+/*
+Redirecter is a Middleware struct that will return a response that redirects the user to Path
+*/
 type Redirecter struct {
 	Path string
 }
@@ -16,11 +22,11 @@ func (this Redirecter) Run(vars map[string]interface{}, next func()) {
 
 type V map[string]interface{}
 
+/*
+Redirect will update the response to be a redirect response 
+*/
 func (vars V) Redirect(path string) {
-	info := (logger.V)(vars).Get()
-	if info != nil {
-		info.Println("Redirecting to " + path)
-	}
+	(logger.V)(vars).Println("Redirecting to " + path)
 
 	r := (httper.V)(vars).GetRequest()
 	w := (httper.V)(vars).BlankResponse()
