@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigy/Middlewaretemplater"
+	"github.com/ScruffyProdigy/Middleware/templater"
 )
 
 

@@ -3,7 +3,7 @@ package statuser
 import (
 	"github.com/ScruffyProdigy/Middleware/encapsulator"
 	"github.com/ScruffyProdigy/Middleware/statuser"
-	"github.com/ScruffyProdigy/Middlewaretemplater"
+	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
 )

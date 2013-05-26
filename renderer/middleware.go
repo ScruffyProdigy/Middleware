@@ -5,7 +5,7 @@ package renderer
 
 import (
 	"github.com/ScruffyProdigy/TheRack/httper"
-	"github.com/ScruffyProdigy/Middlewaretemplater"
+	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/Middleware/logger"
 )
 
