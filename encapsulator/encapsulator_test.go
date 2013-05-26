@@ -2,14 +2,12 @@ package encapsulator
 
 import (
 	"fmt"
+	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"io/ioutil"
 	"net/http"
 )
-
-var templates = templater.New("./test_templates")
 
 func GetFrom(loc string) {
 	resp, err := http.Get(loc)
@@ -30,7 +28,8 @@ func GetFrom(loc string) {
 
 func Example_Basic() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(templater.GetTemplates("./test_templates"))
+	rackup.Add(AddLayout)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		vars["Layout"] = "test"
 		vars["Title"] = "Hello World"
@@ -46,7 +45,8 @@ func Example_Basic() {
 
 func Example_NoLayout() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(templater.GetTemplates("./test_templates"))
+	rackup.Add(AddLayout)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		vars["Title"] = "Hello World"
 		(httper.V)(vars).AppendMessageString("Hello World!")
@@ -61,7 +61,8 @@ func Example_NoLayout() {
 
 func Example_BadLayout() {
 	rackup := rack.New()
-	rackup.Add(AddLayout(templates))
+	rackup.Add(templater.GetTemplates("./test_templates"))
+	rackup.Add(AddLayout)
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		vars["Layout"] = "invalid"
 		vars["Title"] = "Hello World"

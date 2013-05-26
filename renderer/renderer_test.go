@@ -1,16 +1,15 @@
 package renderer
 
 import (
-	"github.com/ScruffyProdigy/Middleware/logger"
-	"os"
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"github.com/ScruffyProdigy/Middleware/logger"
+	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigy/Middleware/templater"
+	"io/ioutil"
+	"net/http"
+	"os"
 )
-
 
 func GetFrom(loc string) {
 	resp, err := http.Get(loc)
@@ -31,9 +30,9 @@ func GetFrom(loc string) {
 
 func Example_Render() {
 	rackup := rack.New()
-	rackup.Add(logger.Set(os.Stdout,"",0))
+	rackup.Add(logger.Set(os.Stdout, "", 0))
 	rackup.Add(templater.GetTemplates("./test_templates"))
-	rackup.Add(rack.Func(func(vars map[string]interface{},next func()){
+	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		vars["Object"] = "World"
 		next()
 	}))

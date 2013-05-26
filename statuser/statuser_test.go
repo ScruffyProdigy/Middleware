@@ -1,24 +1,27 @@
 package statuser
 
 import (
+	"fmt"
 	"github.com/ScruffyProdigy/Middleware/encapsulator"
 	"github.com/ScruffyProdigy/Middleware/statuser"
 	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
+	"io/ioutil"
+	"net/http"
 )
 
 func GetFrom(loc string) {
 	resp, err := http.Get(loc)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("A - " + err.Error())
 		return
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("B - " + err.Error())
 		return
 	}
 
@@ -42,13 +45,13 @@ func Example_General() {
 
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
-	
-	GetFrom("http://localhost:3000")
+
+	GetFrom("http://localhost:3000/")
+
+	//output: Error - 500
 }
 
 func Example_Specific() {
-	templater.LoadFromFiles("templates", nil)
-
 	rackup := rack.New()
 	rackup.Add(templater.GetTemplates("test_templates"))
 	rackup.Add(encapsulator.AddLayout)
@@ -57,7 +60,9 @@ func Example_Specific() {
 	conn := httper.HttpConnection(":3001")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3001")
+	GetFrom("http://localhost:3001/")
+
+	//output: Not Found!
 }
 
 func Example_SpecificOverride() {
@@ -69,6 +74,8 @@ func Example_SpecificOverride() {
 
 	conn := httper.HttpConnection(":3002")
 	go conn.Go(rackup)
-	
-	GetFrom("http://localhost:3002")
+
+	GetFrom("http://localhost:3002/")
+
+	//output: Not Implemented!
 }

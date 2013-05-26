@@ -2,8 +2,8 @@ package encapsulator
 
 import (
 	"github.com/ScruffyProdigy/Middleware/logger"
+	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
-	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"html/template"
 )
 
@@ -12,7 +12,6 @@ import (
 	it will take the current body, and place it in the middle of a layou
 */
 type Encapsulator struct {
-	Templates *templater.Group
 	LayoutVar string //the variable this will look for to find the layout
 	BodyVar   string //the variable this will set the old body into that the layout should look for to reapply
 	Folder    string //the folder to look for the layouts in
@@ -21,16 +20,17 @@ type Encapsulator struct {
 func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	next()
 
-	layout, hasLayout := vars[this.LayoutVar].(string)
-	if !hasLayout {
-		//no "layout", just let it through
+	layout, ok := vars[this.LayoutVar].(string)
+
+	if !ok {
 		logger.V(vars).Println("Layout not set")
 		return
 	}
 
-	L := this.Templates.Get(this.Folder + "/" + layout)
-	if L == nil {
-		//still no layout, just let it through
+	location := this.Folder + "/" + layout
+
+	if !templater.V(vars).Exists(location) {
+		//no "layout", just let it through
 		logger.V(vars).Println("Layout \"" + layout + "\" not found")
 		return
 	}
@@ -38,7 +38,7 @@ func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	vars[this.BodyVar] = template.HTML(httper.V(vars).ResetMessage())
 
 	w := httper.V(vars).FilledResponse()
-	L.Execute(w, vars)
+	templater.V(vars).Render(location, w)
 	w.Save()
 }
 
@@ -48,6 +48,4 @@ func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	It will encapsulate the current body, within whichever template is in the "Layout" variable
 	The layout will be found in the "layouts" folder, and will use {{.Body}} to specify the old body
 */
-func AddLayout(t *templater.Group) *Encapsulator {
-	return &Encapsulator{Templates: t, LayoutVar: "Layout", BodyVar: "Body", Folder: "layouts"}
-}
+var AddLayout = &Encapsulator{LayoutVar: "Layout", BodyVar: "Body", Folder: "layouts"}

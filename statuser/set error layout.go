@@ -1,8 +1,8 @@
 package statuser
 
 import (
-	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/Middleware/templater"
+	"github.com/ScruffyProdigy/TheRack/httper"
 	"strconv"
 )
 

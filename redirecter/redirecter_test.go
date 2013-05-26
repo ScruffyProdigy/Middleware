@@ -2,10 +2,10 @@ package redirecter
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
+	"io/ioutil"
+	"net/http"
 )
 
 func GetFrom(loc string) {
