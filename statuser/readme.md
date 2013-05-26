@@ -55,9 +55,9 @@ __main.go__
 	import (
 		"github.com/ScruffyProdigy/Middleware/encapsulator"
 		"github.com/ScruffyProdigy/Middleware/statuser"
+		"github.com/ScruffyProdigy/Middleware/templater"
 		"github.com/ScruffyProdigy/TheRack/httper"
 		"github.com/ScruffyProdigy/TheRack/rack"
-		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var ErrorWare rack.Func = func(vars map[string]interface{}, next func()) {
@@ -67,9 +67,8 @@ __main.go__
 	}
 
 	func main() {
-		templater.LoadFromFiles("templates", nil)
-
 		rackup := rack.New()
+		rackup.Add(templater.GetTemplates("test_templates"))
 		rackup.Add(encapsulator.AddLayout)
 		rackup.Add(statuser.SetErrorLayout)
 		rackup.Add(ErrorWare)

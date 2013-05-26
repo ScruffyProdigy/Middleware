@@ -16,9 +16,9 @@ __main.go__
 
 	import (
 		"github.com/ScruffyProdigy/Middleware/renderer"
+		"github.com/ScruffyProdigy/Middleware/templater"
 		"github.com/ScruffyProdigy/TheRack/httper"
 		"github.com/ScruffyProdigy/TheRack/rack"
-		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
@@ -28,10 +28,12 @@ __main.go__
 	}
 
 	func main() {
-		templater.LoadFromFiles("templates", nil)
-
+		rackup := rack.New()
+		rackup.Add(templater.GetTemplates("./templates"))
+		rackup.Add(HelloWorldWare)
+		
 		conn := httper.HttpConnection(":3000")
-		conn.Go(HelloWorldWare)
+		conn.Go(rackup)
 	}
 	
 	
@@ -52,9 +54,9 @@ Running this will display an HTML file with the text "Hello World" in both the t
 
 	import (
 		"github.com/ScruffyProdigy/Middleware/renderer"
+		"github.com/ScruffyProdigy/Middleware/templater"
 		"github.com/ScruffyProdigy/TheRack/httper"
 		"github.com/ScruffyProdigy/TheRack/rack"
-		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
@@ -64,9 +66,8 @@ Running this will display an HTML file with the text "Hello World" in both the t
 	}
 
 	func main() {
-		templater.LoadFromFiles("templates", nil)
-
 		rackup := rack.New()
+		rackup.Add(templater.GetTemplates("./templates"))
 		rackup.Add(HelloWorldWare)
 		rackup.Add(renderer.Renderer{Template: "main"})
 

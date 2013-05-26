@@ -1,11 +1,14 @@
 package renderer
 
 import (
+	"github.com/ScruffyProdigy/Middleware/logger"
+	"os"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
+	"github.com/ScruffyProdigy/Middlewaretemplater"
 )
 
 
@@ -26,14 +29,19 @@ func GetFrom(loc string) {
 	fmt.Println(string(body))
 }
 
-func Example_Redirect() {
+func Example_Render() {
 	rackup := rack.New()
-	rackup.Add((""))
+	rackup.Add(logger.Set(os.Stdout,"",0))
+	rackup.Add(templater.GetTemplates("./test_templates"))
+	rackup.Add(rack.Func(func(vars map[string]interface{},next func()){
+		vars["Object"] = "World"
+		next()
+	}))
 	rackup.Add(Renderer{"test"})
 
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
 
 	GetFrom("http://localhost:3000/")
-	//output: /redirected/
+	//output: Hello World
 }
