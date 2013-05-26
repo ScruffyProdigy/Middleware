@@ -1,7 +1,7 @@
 package encapsulator
 
 import (
-	"github.com/ScruffyProdigy/logger"
+	"github.com/ScruffyProdigy/Middleware/logger"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"html/template"
