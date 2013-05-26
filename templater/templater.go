@@ -3,7 +3,7 @@ package templater
 import (
 	"errors"
 	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigyTheTemplater/templater"
+	"github.com/ScruffyProdigy/TheTemplater/templater"
 	"github.com/ScruffyProdigy/Middleware/logger"
 	"io"
 )
