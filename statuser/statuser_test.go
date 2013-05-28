@@ -14,14 +14,14 @@ import (
 func GetFrom(loc string) {
 	resp, err := http.Get(loc)
 	if err != nil {
-		fmt.Println("A - " + err.Error())
+		fmt.Println(err.Error())
 		return
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("B - " + err.Error())
+		fmt.Println(err.Error())
 		return
 	}
 
@@ -62,7 +62,7 @@ func Example_Specific() {
 
 	GetFrom("http://localhost:3001/")
 
-	//output: Not Found!
+	//output: Not Found
 }
 
 func Example_SpecificOverride() {
