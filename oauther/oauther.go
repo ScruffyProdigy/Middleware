@@ -19,9 +19,9 @@ import (
 type TokenHandler func(Oauther, *oauth.Token) rack.Middleware
 
 type Oauther interface {
-	GetConfig() *oauth.Config
-	GetStartUrl() string
-	GetRedirectUrl() string
+	Config() *oauth.Config
+	StartUrl() string
+	RedirectUrl() string
 }
 
 type codeGetter struct {
@@ -40,7 +40,7 @@ func randomString() string {
 func (this codeGetter) Run(vars map[string]interface{}, next func()) {
 	state := randomString()
 	(sessioner.V)(vars).Set("state", state)
-	url := this.o.GetConfig().AuthCodeURL(state)
+	url := this.o.Config().AuthCodeURL(state)
 	(redirecter.V)(vars).Redirect(url)
 }
 
@@ -57,11 +57,11 @@ func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 	}
 
 	state1 := r.FormValue("state")
-	state2 := (sessioner.V)(vars).Clear("state")
+	state2, isstring := (sessioner.V)(vars).Clear("state").(string)
 
 	//if states don't match, it's a potential CSRF attempt; we're just going to pass it on, and a 404 will probably be passed back (unless this happens to route somewhere else too)
 	//perhaps we should just return a 401-Unauthorized, though
-	if state1 != state2 {
+	if !isstring || state1 != state2 {
 		//	Warning: Potential CSRF attempt : states don't match
 		next()
 		return
@@ -69,7 +69,7 @@ func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 
 	//Step 2: Exchange the code for the token
 	code := r.FormValue("code")
-	t := &oauth.Transport{oauth.Config: this.o.GetConfig()}
+	t := &oauth.Transport{Config: this.o.Config()}
 	tok, _ := t.Exchange(code)
 
 	//Step 3: Have some other middleware handle whatever they're doing with the token (probably logging a user in)
@@ -78,12 +78,12 @@ func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 }
 
 func SetIntercepts(i interceptor.Interceptor, o Oauther, t TokenHandler) {
-	i.Intercept(o.GetStartUrl(), &codeGetter{o})
-	i.Intercept(o.GetRedirectUrl(), &tokenGetter{o, t})
+	i.Intercept(o.StartUrl(), &codeGetter{o})
+	i.Intercept(o.RedirectUrl(), &tokenGetter{o, t})
 }
 
 func GetSite(o Oauther, tok *oauth.Token, site string, handler func(*http.Response)) {
-	t := &oauth.Transport{oauth.Config: o.GetConfig(), oauth.Token: tok}
+	t := &oauth.Transport{Config: o.Config(), Token: tok}
 	req, err := t.Client().Get(site)
 	if err != nil {
 		panic(err)
