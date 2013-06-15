@@ -100,7 +100,7 @@ func init() {
 	//set up oauth host
 
 	hoster := &FakeProvider{
-		YourURL:     "http://localhost:3000",
+		YourURL:     "http://localhost:4006",
 		YourLanding: "/callback",
 		MyURL:       "http://localhost:3001",
 	}
@@ -116,7 +116,7 @@ func init() {
 	rackup.Add(sessioner.Middleware)
 	rackup.Add(cept)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4006")
 	go conn.Go(rackup)
 }
 
@@ -163,10 +163,10 @@ func GetFromResults(url string, cookies *[]*http.Cookie, t *testing.T, assertedS
 
 func Test_CSRF(t *testing.T) {
 	var cookies []*http.Cookie
-	GetFromResults("http://localhost:3000/callback", &cookies, t, 404, "")
+	GetFromResults("http://localhost:4006/callback", &cookies, t, 404, "")
 }
 
 func Test_Normal(t *testing.T) {
 	var cookies []*http.Cookie
-	GetFromResults("http://localhost:3000/start", &cookies, t, 200, "payload")
+	GetFromResults("http://localhost:4006/start", &cookies, t, 200, "payload")
 }

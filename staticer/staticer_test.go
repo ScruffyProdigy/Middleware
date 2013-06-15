@@ -29,9 +29,9 @@ func Example_Basic() {
 	rackup := rack.New()
 	rackup.Add(New("/static/", "./test_files"))
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4013")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/static/test.txt")
+	GetFrom("http://localhost:4013/static/test.txt")
 	//output: Hello World!
 }

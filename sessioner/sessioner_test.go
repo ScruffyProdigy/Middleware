@@ -56,12 +56,12 @@ func Example_Session() {
 	rackup.Add(Middleware)
 	rackup.Add(HelloWorldWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4012")
 	go conn.Go(rackup)
 
 	var cookies []*http.Cookie
 	for i := 0; i < 4; i++ {
-		cookies = GetWithCookies("http://localhost:3000", cookies)
+		cookies = GetWithCookies("http://localhost:4012", cookies)
 	}
 	//output: 1234
 }

@@ -112,32 +112,32 @@ func init() {
 	rackup.Add(Form)
 	rackup.Add(HttpWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4007")
 	go conn.Go(rackup)
 }
 
 func Example_None() {
-	PostTo("http://localhost:3000", url.Values{})
+	PostTo("http://localhost:4007", url.Values{})
 	//output: You are nameless
 }
 
 func Example_Basic() {
-	PostTo("http://localhost:3000", url.Values{"Name": {"Bob"}})
+	PostTo("http://localhost:4007", url.Values{"Name": {"Bob"}})
 	//output: Welcome, Bob
 }
 
 func Example_Overloaded() {
-	PostTo("http://localhost:3000", url.Values{"Name": {"Jim", "Bob"}})
+	PostTo("http://localhost:4007", url.Values{"Name": {"Jim", "Bob"}})
 	//output: Welcome, Jim
 }
 
 func Example_Empty() {
-	PostTo("http://localhost:3000", url.Values{"Name": {}})
+	PostTo("http://localhost:4007", url.Values{"Name": {}})
 	//output: You are nameless
 }
 
 func Example_Incorrect() {
-	PostTo("http://localhost:3000", url.Values{"irrelevant": {}})
+	PostTo("http://localhost:4007", url.Values{"irrelevant": {}})
 }
 
 func Example_Skipped() {

@@ -34,10 +34,10 @@ func Example_BasicError() {
 		array[1] = 0 //this action results in a runtime error; we are indexing past the range of the slice
 	}))
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4001")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4001/")
 	//output: runtime error: index out of range
 }
 

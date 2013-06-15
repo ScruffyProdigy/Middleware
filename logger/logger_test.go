@@ -20,9 +20,9 @@ func Example_Basic() {
 	rackup.Add(Set(os.Stdout, "Log Test - ", 0))
 	rackup.Add(HelloWorldWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4003")
 	go conn.Go(rackup)
-	http.Get("http://localhost:3000")
+	http.Get("http://localhost:4003")
 	//output: Log Test - Hello World!
 }
 
@@ -30,8 +30,8 @@ func Example_NoLogger() {
 	rackup := rack.New()
 	rackup.Add(HelloWorldWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4004")
 	go conn.Go(rackup)
-	http.Get("http://localhost:3000")
+	http.Get("http://localhost:4004")
 	//output:
 }

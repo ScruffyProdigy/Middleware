@@ -13,8 +13,8 @@ func Example_Basic() {
 	rackup.Add(logger.Set(os.Stdout, "", 0))
 	rackup.Add(Logger)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4009")
 	go conn.Go(rackup)
-	http.Get("http://localhost:3000/location")
+	http.Get("http://localhost:4009/location")
 	//output: GET /location
 }

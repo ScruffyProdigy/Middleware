@@ -33,9 +33,9 @@ func Example_Basic() {
 		(httper.V)(vars).SetMessageString("Hello " + world)
 	}))
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4015")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4015/")
 	//output: Hello World!
 }

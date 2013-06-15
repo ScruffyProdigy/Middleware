@@ -39,36 +39,36 @@ func init() {
 	rackup.Add(Override)
 	rackup.Add(HttpWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4005")
 	go conn.Go(rackup)
 }
 
 func Example_Default() {
-	PostTo("http://localhost:3000", url.Values{})
+	PostTo("http://localhost:4005", url.Values{})
 	//output: You used POST
 }
 
 func Example_Post() {
-	PostTo("http://localhost:3000", url.Values{"_method": {"post"}})
+	PostTo("http://localhost:4005", url.Values{"_method": {"post"}})
 	//output: You used POST
 }
 
 func Example_Get() {
-	PostTo("http://localhost:3000", url.Values{"_method": {"get"}})
+	PostTo("http://localhost:4005", url.Values{"_method": {"get"}})
 	//output: You used GET
 }
 
 func Example_Delete() {
-	PostTo("http://localhost:3000", url.Values{"_method": {"delete"}})
+	PostTo("http://localhost:4005", url.Values{"_method": {"delete"}})
 	//output: You used DELETE
 }
 
 func Example_Put() {
-	PostTo("http://localhost:3000", url.Values{"_method": {"put"}})
+	PostTo("http://localhost:4005", url.Values{"_method": {"put"}})
 	//output: You used PUT
 }
 
 func Example_Invalid() {
-	PostTo("http://localhost:3000", url.Values{"_method": {"invalid"}})
+	PostTo("http://localhost:4005", url.Values{"_method": {"invalid"}})
 	//output: You used POST
 }

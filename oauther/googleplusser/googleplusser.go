@@ -1,7 +1,7 @@
 package googleplusser
 
 import (
-	"github.com/ScruffyProdigy/goauth2/oauth"
+	"code.google.com/p/goauth2/oauth"
 	"strings"
 )
 

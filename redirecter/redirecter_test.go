@@ -38,9 +38,9 @@ func Example_Redirect() {
 	}))
 	rackup.Add(Redirecter{"/redirected/"})
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4008")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4008/")
 	//output: /redirected/
 }

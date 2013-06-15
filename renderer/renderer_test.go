@@ -38,9 +38,9 @@ func Example_Render() {
 	}))
 	rackup.Add(Renderer{"test"})
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4010")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4010/")
 	//output: Hello World
 }

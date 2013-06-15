@@ -43,10 +43,10 @@ func Example_General() {
 	rackup.Add(statuser.SetErrorLayout)
 	rackup.Add(ErrorWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4014")
 	go conn.Go(rackup)
 
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4014/")
 
 	//output: Error - 500
 }

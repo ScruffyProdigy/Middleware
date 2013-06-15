@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/HairyMezican/Middleware/redirecter"
-	"github.com/HairyMezican/Middleware/renderer"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/ScruffyProdigy/Middleware/redirecter"
+	"github.com/ScruffyProdigy/Middleware/renderer"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 	"reflect"
 	"strings"
 )

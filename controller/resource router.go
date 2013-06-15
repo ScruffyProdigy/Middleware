@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"github.com/HairyMezican/Middleware/router"
-	"github.com/HairyMezican/TheRack/httper"
-	"github.com/HairyMezican/TheRack/rack"
+	"github.com/ScruffyProdigy/Middleware/router"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 	"net/http"
 )
 

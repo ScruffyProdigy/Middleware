@@ -24,7 +24,7 @@ func init() {
 	rackup.Add(cept)
 	rackup.Add(RootWare)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4002")
 	go conn.Go(rackup)
 }
 
@@ -46,11 +46,11 @@ func GetFrom(loc string) {
 }
 
 func Example_1() {
-	GetFrom("http://localhost:3000/")
+	GetFrom("http://localhost:4002/")
 	//output: <html>Check out my <a href="helloworld">Hello World</a></html>
 }
 
 func Example_2() {
-	GetFrom("http://localhost:3000/helloworld")
+	GetFrom("http://localhost:4002/helloworld")
 	//output: Hello World
 }

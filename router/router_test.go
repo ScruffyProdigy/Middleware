@@ -76,49 +76,52 @@ func init() {
 	Root := BasicRoute("", RootWare)
 	Root.AddRoute(CollectionRoute)
 
-	conn := httper.HttpConnection(":3000")
+	conn := httper.HttpConnection(":4011")
 	go conn.Go(Root)
 }
 
 func Example_Root() {
-	GetFrom("http://localhost:3000")
+	GetFrom("http://localhost:4011")
 
 	//output: <html>Check out <a href='/coins'>My Coins</a></html>
 }
 
 func Example_CoinCollection() {
-	GetFrom("http://localhost:3000/coins")
+	GetFrom("http://localhost:4011/coins")
 
 	//output: <html><ul><li><a href='/coins/dime'>Dime</a></li><li><a href='/coins/nickel'>Nickel</a></li><li><a href='/coins/penny'>Penny</a></li><li><a href='/coins/quarter'>Quarter</a></li></ul></html>
 }
 
 func Example_CoinMembers() {
-	GetFrom("http://localhost:3000/coins/penny")
-	GetFrom("http://localhost:3000/coins/nickel")
-	GetFrom("http://localhost:3000/coins/dime")
-	GetFrom("http://localhost:3000/coins/quarter")
+	GetFrom("http://localhost:4011/coins/penny")
+	GetFrom("http://localhost:4011/coins/nickel")
+	GetFrom("http://localhost:4011/coins/dime")
+	GetFrom("http://localhost:4011/coins/quarter")
 
-	/* output:
-	   useless
-	   heavy and annoying
-	   light and annoying
-	   not obsolete quite yet
-	*/
+
+//Nota Buena: go fmt messes this next section up - it puts tabs in, which then makes the output incorrect
+
+/* output:
+useless
+heavy and annoying
+light and annoying
+not obsolete quite yet
+*/
 }
 
 func Example_Missing() {
-	GetFrom("http://localhost:3000/coins/halfdollar")
+	GetFrom("http://localhost:4011/coins/halfdollar")
 	//output: 404
 }
 
 func Example_CoinCollectionExtraSlash() {
-	GetFrom("http://localhost:3000/coins/")
+	GetFrom("http://localhost:4011/coins/")
 
 	//output: <html><ul><li><a href='/coins/dime'>Dime</a></li><li><a href='/coins/nickel'>Nickel</a></li><li><a href='/coins/penny'>Penny</a></li><li><a href='/coins/quarter'>Quarter</a></li></ul></html>
 }
 
 func Example_CoinCollectionMiscapitalized() {
-	GetFrom("http://localhost:3000/CoInS")
+	GetFrom("http://localhost:4011/CoInS")
 
 	//output: <html><ul><li><a href='/coins/dime'>Dime</a></li><li><a href='/coins/nickel'>Nickel</a></li><li><a href='/coins/penny'>Penny</a></li><li><a href='/coins/quarter'>Quarter</a></li></ul></html>
 }
