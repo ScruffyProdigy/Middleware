@@ -13,7 +13,7 @@ import (
 )
 
 /*
-Form will make sure all form variables are parsed properly before 
+Form will make sure all form variables are parsed properly before
 */
 var Form rack.Func = func(vars map[string]interface{}, next func()) {
 	V(vars).Parse()
@@ -33,7 +33,7 @@ func (this Multipart) Run(vars map[string]interface{}, next func()) {
 }
 
 /*
-VarMultipart is like Multipart, in that it will load any files that were sent in.  
+VarMultipart is like Multipart, in that it will load any files that were sent in.
 It uses a variable in the vars to determine what the maximum file size should be.
 This is useful if the max size isn't constant but you can determine it some other way
 */

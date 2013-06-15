@@ -98,12 +98,12 @@ func Example_CoinMembers() {
 	GetFrom("http://localhost:3000/coins/dime")
 	GetFrom("http://localhost:3000/coins/quarter")
 
-/* output:
-useless
-heavy and annoying
-light and annoying
-not obsolete quite yet
-*/
+	/* output:
+	   useless
+	   heavy and annoying
+	   light and annoying
+	   not obsolete quite yet
+	*/
 }
 
 func Example_Missing() {

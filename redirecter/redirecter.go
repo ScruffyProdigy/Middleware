@@ -23,7 +23,7 @@ func (this Redirecter) Run(vars map[string]interface{}, next func()) {
 type V map[string]interface{}
 
 /*
-Redirect will update the response to be a redirect response 
+Redirect will update the response to be a redirect response
 */
 func (vars V) Redirect(path string) {
 	(logger.V)(vars).Println("Redirecting to " + path)

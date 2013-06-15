@@ -134,7 +134,7 @@ func GetFrom(url string, cookies []*http.Cookie, t *testing.T) (int, string, []*
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	client := &http.Client{Jar:jar}
+	client := &http.Client{Jar: jar}
 	res, err := client.Do(req)
 	if err != nil {
 		t.Fatal(err.Error())

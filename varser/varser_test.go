@@ -1,11 +1,11 @@
 package varser
 
 import (
-	"net/http"
 	"fmt"
-	"io/ioutil"
-	"github.com/ScruffyProdigy/TheRack/rack"
 	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
+	"io/ioutil"
+	"net/http"
 )
 
 func GetFrom(loc string) {
@@ -27,12 +27,12 @@ func GetFrom(loc string) {
 
 func Example_Basic() {
 	rackup := rack.New()
-	rackup.Add(V{"world":"World!"})
+	rackup.Add(V{"world": "World!"})
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		world := vars["world"].(string)
-		(httper.V)(vars).SetMessageString("Hello "+world)
+		(httper.V)(vars).SetMessageString("Hello " + world)
 	}))
-	
+
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
 

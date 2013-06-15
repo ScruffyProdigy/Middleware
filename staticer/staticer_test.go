@@ -1,11 +1,11 @@
 package staticer
 
 import (
-	"net/http"
 	"fmt"
-	"io/ioutil"
-	"github.com/ScruffyProdigy/TheRack/rack"
 	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
+	"io/ioutil"
+	"net/http"
 )
 
 func GetFrom(loc string) {
@@ -27,9 +27,8 @@ func GetFrom(loc string) {
 
 func Example_Basic() {
 	rackup := rack.New()
-	rackup.Add(New("/static/","./test_files"))
+	rackup.Add(New("/static/", "./test_files"))
 
-	
 	conn := httper.HttpConnection(":3000")
 	go conn.Go(rackup)
 

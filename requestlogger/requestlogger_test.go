@@ -1,11 +1,11 @@
 package requestlogger
 
 import (
+	"github.com/ScruffyProdigy/Middleware/logger"
+	"github.com/ScruffyProdigy/TheRack/httper"
+	"github.com/ScruffyProdigy/TheRack/rack"
 	"net/http"
 	"os"
-	"github.com/ScruffyProdigy/Middleware/logger"
-	"github.com/ScruffyProdigy/TheRack/rack"
-	"github.com/ScruffyProdigy/TheRack/httper"
 )
 
 func Example_Basic() {
