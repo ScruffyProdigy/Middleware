@@ -5,6 +5,7 @@ import (
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
 	"net/http"
+	"strings"
 )
 
 /*
@@ -45,12 +46,13 @@ func (this splitter) Run(vars map[string]interface{}, next func()) {
 
 type memberSignaler struct {
 	varName string
-	indexer func(string, map[string]interface{}) (interface{}, bool)
+	indexer Indexer
 }
 
 func (this memberSignaler) Run(vars map[string]interface{}) bool {
 	id := (router.V)(vars).CurrentSection()
-	result, found := this.indexer(id, vars)
+	result, found := this.indexer.Find(id, vars)
+
 	if !found {
 		return false
 	}
@@ -77,7 +79,7 @@ func (this collectionSignaler) Run(vars map[string]interface{}) bool {
 	it expects
 	name: a string that represents the name of the resource.  This is used in the routing process
 	restfuncs: the RESTful routes that this resource expects to handle
-		the usable keys in the map are: "index","new","create","show","edit","update", and "delete"
+		the usable keys in the map are: "index","new","create","show","edit","update", and "destroy"
 	variablename: If we are drilling down into a member of the resource, we will add a variable to the rack variables, and this will be the name that it will set
 	getter:	if we need to get a member resource, you'll have to help us;  we'll give you the string representing the ID, you give us the resource
 */
@@ -96,17 +98,17 @@ func AddMapListRoutes(superroute *router.Router, maplist mapList) {
 	AddMapRoutes(superroute, maplist.all, router.All)
 }
 
-func RegisterController(m ModelMap, routeName, varName string, indexer func(s string, vars map[string]interface{}) (interface{}, bool)) *ControllerShell {
+func NewResource(m ResourceController) *ControllerShell {
 	resource := new(ControllerShell)
 
-	descriptor := createDescriptor(m, routeName, varName)
+	descriptor := createDescriptor(m)
 
 	restfuncs := descriptor.GetRestMap()
 	memberfuncs := descriptor.GetGenericMapList("Member")
 	collectionfuncs := descriptor.GetGenericMapList("Collection")
 
 	resource.Member = router.NewRouter()
-	resource.Member.Routing = memberSignaler{varName: varName, indexer: indexer}
+	resource.Member.Routing = memberSignaler{varName: descriptor.varName, indexer: m}
 	resource.Member.Action = splitter{get: restfuncs["show"], put: restfuncs["update"], delete: restfuncs["destroy"]}
 
 	if restfuncs["edit"] != nil {
@@ -115,7 +117,7 @@ func RegisterController(m ModelMap, routeName, varName string, indexer func(s st
 	AddMapListRoutes(resource.Member, memberfuncs)
 
 	resource.Collection = router.NewRouter()
-	resource.Collection.Routing = collectionSignaler{name: routeName}
+	resource.Collection.Routing = collectionSignaler{name: descriptor.routeName}
 	resource.Collection.Action = splitter{get: restfuncs["index"], post: restfuncs["create"]}
 
 	if restfuncs["new"] != nil {
@@ -138,4 +140,37 @@ func (this ControllerShell) AddAsSubresource(parent *ControllerShell) {
 
 func (this ControllerShell) AddAsSubmethod(parent *ControllerShell) {
 	parent.Collection.AddRoute(this.Collection)
+}
+
+//use this to create the root of your routes (e.g. for http://example.com/)
+func NewRoot(m rack.Middleware) *router.Router {
+	return router.BasicRoute("", m)
+}
+
+//use this to create a route namespace (i.e. "admin").
+// name is the string used for the namespace.
+// intermediate will be ran if the namespace is used (http://example.com/admin/posts).
+// final will be ran if the namespace is the destination (http://example.com/admin)
+func NewNamespace(name string, intermediate router.Signaler, final rack.Middleware) *router.Router {
+	r := router.NewRouter()
+	r.Routing = router.SignalFunc(func(vars map[string]interface{}) bool {
+		section := router.V(vars).CurrentSection()
+
+		if !router.V(vars).IsCaseSensitive() {
+			name = strings.ToLower(name)
+		}
+
+		if section != name {
+			return false
+		}
+
+		if intermediate != nil {
+			return intermediate.Run(vars)
+		}
+
+		return true
+	})
+
+	r.Action = final
+	return r
 }

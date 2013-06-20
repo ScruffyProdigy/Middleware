@@ -22,11 +22,16 @@ type Heart struct {
 	finish func()
 }
 
-type ModelMap interface {
+type Indexer interface {
+	Find(s string, vars map[string]interface{}) (interface{}, bool)
+}
+
+type ResourceController interface {
 	SetRackVars(descriptor, map[string]interface{}, func())
 	IsFinished() bool
 	SetFinished()
 	SetUnfinished()
+	Indexer
 }
 
 // this is how we hide the rack variables from the controllers who don't really care so much about these
@@ -116,7 +121,7 @@ func (this Heart) Session() sessioner.V {
 }
 
 // this will get the form value from the form that was passed in
-func (this Heart) GetFormValue(value string) string {
+func (this Heart) FormValue(value string) string {
 	return (httper.V)(this.Vars).GetRequest().FormValue(value)
 }
 

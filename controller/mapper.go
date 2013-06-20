@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bitbucket.org/pkg/inflect"
 	"github.com/ScruffyProdigy/Middleware/redirecter"
 	"github.com/ScruffyProdigy/Middleware/renderer"
 	"github.com/ScruffyProdigy/TheRack/httper"
@@ -24,11 +25,31 @@ type descriptor struct {
 	varName, routeName string
 }
 
-func createDescriptor(iface interface{}, routeName, varName string) descriptor {
+func createDescriptor(iface interface{}) descriptor {
 	pv := reflect.ValueOf(iface)
 	v := reflect.Indirect(pv)
+	t := v.Type()
+
+	var varName string
+	if nameGetter, hasVarName := iface.(interface {
+		VarName() string
+	}); hasVarName {
+		varName = nameGetter.VarName()
+	} else {
+		varName = inflect.Singularize(t.Name())
+	}
+
+	var routeName string
+	if nameGetter, hasRouteName := iface.(interface {
+		RouteName() string
+	}); hasRouteName {
+		routeName = nameGetter.RouteName()
+	} else {
+		routeName = strings.ToLower(t.Name())
+	}
+
 	return descriptor{
-		t:         v.Type(),
+		t:         t,
 		varName:   varName,
 		routeName: routeName,
 	}
@@ -41,7 +62,7 @@ func (this descriptor) addDispatchAction(funcs map[string]rack.Middleware, name 
 	d.name = name
 	d.action = rack.Func(func(vars map[string]interface{}, next func()) {
 		copy := reflect.New(this.t)
-		mapper := copy.Interface().(ModelMap)
+		mapper := copy.Interface().(ResourceController)
 		mapper.SetRackVars(this, vars, next)
 		method.Func.Call([]reflect.Value{reflect.Indirect(copy)})
 		if !mapper.IsFinished() {
@@ -69,7 +90,24 @@ func (this dispatchAction) Run(vars map[string]interface{}, next func()) {
 			(redirecter.V)(vars).Redirect(urler.Url())
 		}))
 	case "DELETE":
-		//I'm not currently sure what the default action for deletion should be, perhaps redirecting to the parent route
+		urler, isUrler := vars[this.varName].(Urler)
+		if !isUrler {
+			panic("Object doesn't have an URL to direct to")
+		}
+		url := urler.Url()
+
+		if url[len(url)-1:] == "/" {
+			url = url[:len(url)-1]
+		}
+
+		i := strings.LastIndex(url, "/")
+		if i != -1 {
+			url = url[:i]
+		}
+		actions.Add(rack.Func(func(vars map[string]interface{}, next func()) {
+			next()
+		}))
+		actions.Add(redirecter.Redirecter{url})
 	default:
 		panic("Unknown method")
 	}
