@@ -103,7 +103,6 @@ func AddMapListRoutes(superroute *router.Router, maplist mapList) {
 func firstNonNilMiddleware(options []rack.Middleware) rack.Middleware {
 	for _, option := range options {
 		if option != nil {
-			print("")
 			return option
 		}
 	}
