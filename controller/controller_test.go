@@ -115,7 +115,7 @@ func init() {
 	client = &http.Client{Jar: jar}
 	root := NewRoot(redirecter.Redirecter{"http://localhost:5001/coins"})
 	coinRoute := NewResource(&Coins{})
-	coinRoute.AddTo(root)
+	root.AddRoute(coinRoute)
 
 	rackup := rack.New()
 	rackup.Add(templater.GetTemplates("./test_templates"))

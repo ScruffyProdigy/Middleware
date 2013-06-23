@@ -160,7 +160,7 @@ func (this descriptor) GetGenericMap(functype string) (funcs map[string]rack.Mid
 
 	for i, c := 0, this.t.NumMethod(); i < c; i = i + 1 {
 		method := this.t.Method(i)
-		//if the first part of the name is whatever we're looking for, and it's a contr
+		//if the first part of the name is whatever we're looking for, and it's a control function
 		if len(method.Name) >= typelen && method.Name[:typelen] == functype && isControlFunc(method) {
 			this.addDispatchAction(funcs, method.Name[typelen:], method)
 		}

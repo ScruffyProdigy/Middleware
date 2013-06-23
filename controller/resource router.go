@@ -86,7 +86,9 @@ func (this collectionSignaler) Run(vars map[string]interface{}) bool {
 
 func AddMapRoutes(superroute *router.Router, routemap map[string]rack.Middleware, methodfinder func(string, rack.Middleware) *router.Router) {
 	for name, action := range routemap {
-		superroute.AddRoute(methodfinder(name, action))
+		if name != "" {
+			superroute.AddRoute(methodfinder(name, action))
+		}
 	}
 }
 
@@ -96,6 +98,16 @@ func AddMapListRoutes(superroute *router.Router, maplist mapList) {
 	AddMapRoutes(superroute, maplist.post, router.Post)
 	AddMapRoutes(superroute, maplist.delete, router.Delete)
 	AddMapRoutes(superroute, maplist.all, router.All)
+}
+
+func firstNonNilMiddleware(options []rack.Middleware) rack.Middleware {
+	for _, option := range options {
+		if option != nil {
+			print("")
+			return option
+		}
+	}
+	return nil
 }
 
 func NewResource(m ResourceController) *ControllerShell {
@@ -109,7 +121,12 @@ func NewResource(m ResourceController) *ControllerShell {
 
 	resource.Member = router.NewRouter()
 	resource.Member.Routing = memberSignaler{varName: descriptor.varName, indexer: m}
-	resource.Member.Action = splitter{get: restfuncs["show"], put: restfuncs["update"], delete: restfuncs["destroy"]}
+	memberactions := splitter{}
+	memberactions.get = firstNonNilMiddleware([]rack.Middleware{restfuncs["show"], memberfuncs.get[""], memberfuncs.all[""]})
+	memberactions.post = firstNonNilMiddleware([]rack.Middleware{memberfuncs.post[""], memberfuncs.all[""]})
+	memberactions.put = firstNonNilMiddleware([]rack.Middleware{restfuncs["update"], memberfuncs.put[""], memberfuncs.all[""]})
+	memberactions.delete = firstNonNilMiddleware([]rack.Middleware{restfuncs["destroy"], memberfuncs.delete[""], memberfuncs.all[""]})
+	resource.Member.Action = memberactions
 
 	if restfuncs["edit"] != nil {
 		memberfuncs.get["edit"] = restfuncs["edit"]
@@ -118,7 +135,12 @@ func NewResource(m ResourceController) *ControllerShell {
 
 	resource.Collection = router.NewRouter()
 	resource.Collection.Routing = collectionSignaler{name: descriptor.routeName}
-	resource.Collection.Action = splitter{get: restfuncs["index"], post: restfuncs["create"]}
+	collectionactions := splitter{}
+	collectionactions.get = firstNonNilMiddleware([]rack.Middleware{restfuncs["index"], collectionfuncs.get[""], collectionfuncs.all[""]})
+	collectionactions.post = firstNonNilMiddleware([]rack.Middleware{restfuncs["create"], collectionfuncs.post[""], collectionfuncs.all[""]})
+	collectionactions.put = firstNonNilMiddleware([]rack.Middleware{collectionfuncs.put[""], collectionfuncs.all[""]})
+	collectionactions.delete = firstNonNilMiddleware([]rack.Middleware{collectionfuncs.delete[""], collectionfuncs.all[""]})
+	resource.Collection.Action = collectionactions
 
 	if restfuncs["new"] != nil {
 		collectionfuncs.get["new"] = restfuncs["new"]
@@ -130,16 +152,8 @@ func NewResource(m ResourceController) *ControllerShell {
 	return resource
 }
 
-func (this ControllerShell) AddTo(superroute *router.Router) {
-	superroute.AddRoute(this.Collection)
-}
-
-func (this ControllerShell) AddAsSubresource(parent *ControllerShell) {
-	parent.Member.AddRoute(this.Collection)
-}
-
-func (this ControllerShell) AddAsSubmethod(parent *ControllerShell) {
-	parent.Collection.AddRoute(this.Collection)
+func (this *ControllerShell) Router() *router.Router {
+	return this.Collection
 }
 
 //use this to create the root of your routes (e.g. for http://example.com/)
