@@ -98,15 +98,14 @@ func Example_CoinMembers() {
 	GetFrom("http://localhost:4011/coins/dime")
 	GetFrom("http://localhost:4011/coins/quarter")
 
+	//Nota Buena: go fmt messes this next section up - it puts tabs in, which then makes the output incorrect
 
-//Nota Buena: go fmt messes this next section up - it puts tabs in, which then makes the output incorrect
-
-/* output:
-useless
-heavy and annoying
-light and annoying
-not obsolete quite yet
-*/
+	/* output:
+	   useless
+	   heavy and annoying
+	   light and annoying
+	   not obsolete quite yet
+	*/
 }
 
 func Example_Missing() {

@@ -10,6 +10,10 @@ type Router struct {
 	Routing   Signaler
 }
 
+type HasRouter interface {
+	Router() *Router
+}
+
 func NewRouter() *Router {
 	this := new(Router)
 	this.subroutes = make([]*Router, 0)
@@ -20,6 +24,10 @@ func Route(routing Signaler, action rack.Middleware) *Router {
 	this := NewRouter()
 	this.Routing = routing
 	this.Action = action
+	return this
+}
+
+func (this *Router) Router() *Router {
 	return this
 }
 
@@ -38,8 +46,10 @@ func (this *Router) Run(vars map[string]interface{}, next func()) {
 	}
 }
 
-func (this *Router) AddRoute(r ...*Router) {
-	this.subroutes = append(this.subroutes, r...)
+func (this *Router) AddRoute(routes ...HasRouter) {
+	for _, route := range routes {
+		this.subroutes = append(this.subroutes, route.Router())
+	}
 }
 
 type Signaler interface {
