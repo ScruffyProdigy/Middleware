@@ -21,11 +21,13 @@ type dispatchAction struct {
 }
 
 type descriptor struct {
+	obj                interface{}
+	router             *ResourceRouter
 	t                  reflect.Type
 	varName, routeName string
 }
 
-func createDescriptor(iface interface{}) descriptor {
+func createDescriptor(iface interface{}, router *ResourceRouter) descriptor {
 	pv := reflect.ValueOf(iface)
 	v := reflect.Indirect(pv)
 	t := v.Type()
@@ -49,6 +51,8 @@ func createDescriptor(iface interface{}) descriptor {
 	}
 
 	return descriptor{
+		obj:       iface,
+		router:    router,
 		t:         t,
 		varName:   varName,
 		routeName: routeName,
@@ -83,31 +87,13 @@ func (this dispatchAction) Run(vars map[string]interface{}, next func()) {
 	case "POST", "PUT":
 		//if it was a put or a post, we the default action should be to redirect to the affected item
 		actions.Add(rack.Func(func(vars map[string]interface{}, next func()) {
-			urler, isUrler := vars[this.varName].(Urler)
-			if !isUrler {
-				panic("Object doesn't have an URL to direct to")
-			}
-			(redirecter.V)(vars).Redirect(urler.Url())
+			(redirecter.V)(vars).Redirect(this.descriptor.router.Route(vars))
 		}))
 	case "DELETE":
-		urler, isUrler := vars[this.varName].(Urler)
-		if !isUrler {
-			panic("Object doesn't have an URL to direct to")
-		}
-		url := urler.Url()
-
-		if url[len(url)-1:] == "/" {
-			url = url[:len(url)-1]
-		}
-
-		i := strings.LastIndex(url, "/")
-		if i != -1 {
-			url = url[:i]
-		}
 		actions.Add(rack.Func(func(vars map[string]interface{}, next func()) {
-			next()
+			delete(vars, this.varName)
+			(redirecter.V)(vars).Redirect(this.descriptor.router.Route(vars))
 		}))
-		actions.Add(redirecter.Redirecter{url})
 	default:
 		panic("Unknown method")
 	}

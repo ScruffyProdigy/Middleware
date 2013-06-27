@@ -9,13 +9,30 @@ import (
 )
 
 /*
-a ResourceRouter assumes that it represents a RESTful resource, and will process it as such
-it also allows you to add non-RESTful member and collection routes by exposing a route branch for each
+	ResourceRouter routes requests properly for a resource.
+	Typically there are two levels of routing: The collection level (http://example.com/posts), and the member level (http://example.com/posts/17)
 */
-
-type ControllerShell struct {
+type ResourceRouter struct {
+	varName    string
 	Collection *router.Router //you can add non-RESTful collection-level routes here
 	Member     *router.Router //you can add non-RESTful member-level routes here
+}
+
+func (this *ResourceRouter) Router() *router.Router {
+	return this.Collection
+}
+
+func (this *ResourceRouter) SetParent(parent *router.Router) {
+	this.Collection.SetParent(parent)
+}
+
+func (this *ResourceRouter) Route(vars map[string]interface{}) string {
+	_, isMember := vars[this.varName].(Model)
+	if isMember {
+		return this.Member.Route(vars)
+	} else {
+		return this.Collection.Route(vars)
+	}
 }
 
 type splitter struct {
@@ -62,6 +79,18 @@ func (this memberSignaler) Run(vars map[string]interface{}) bool {
 	return true
 }
 
+type memberNamer struct {
+	varName string
+}
+
+func (this memberNamer) Run(vars map[string]interface{}, prev func() string) string {
+	name := "(" + this.varName + ")"
+	if obj, ok := vars[this.varName].(Model); ok {
+		name = obj.ID()
+	}
+	return prev() + name + "/"
+}
+
 type collectionSignaler struct {
 	name string
 }
@@ -84,7 +113,7 @@ func (this collectionSignaler) Run(vars map[string]interface{}) bool {
 	getter:	if we need to get a member resource, you'll have to help us;  we'll give you the string representing the ID, you give us the resource
 */
 
-func AddMapRoutes(superroute *router.Router, routemap map[string]rack.Middleware, methodfinder func(string, rack.Middleware) *router.Router) {
+func addMapRoutes(superroute *router.Router, routemap map[string]rack.Middleware, methodfinder func(string, rack.Middleware) *router.Router) {
 	for name, action := range routemap {
 		if name != "" {
 			superroute.AddRoute(methodfinder(name, action))
@@ -92,12 +121,12 @@ func AddMapRoutes(superroute *router.Router, routemap map[string]rack.Middleware
 	}
 }
 
-func AddMapListRoutes(superroute *router.Router, maplist mapList) {
-	AddMapRoutes(superroute, maplist.get, router.Get)
-	AddMapRoutes(superroute, maplist.put, router.Put)
-	AddMapRoutes(superroute, maplist.post, router.Post)
-	AddMapRoutes(superroute, maplist.delete, router.Delete)
-	AddMapRoutes(superroute, maplist.all, router.All)
+func addMapListRoutes(superroute *router.Router, maplist mapList) {
+	addMapRoutes(superroute, maplist.get, router.Get)
+	addMapRoutes(superroute, maplist.put, router.Put)
+	addMapRoutes(superroute, maplist.post, router.Post)
+	addMapRoutes(superroute, maplist.delete, router.Delete)
+	addMapRoutes(superroute, maplist.all, router.All)
 }
 
 func firstNonNilMiddleware(options []rack.Middleware) rack.Middleware {
@@ -109,16 +138,18 @@ func firstNonNilMiddleware(options []rack.Middleware) rack.Middleware {
 	return nil
 }
 
-func NewResource(m ResourceController) *ControllerShell {
-	resource := new(ControllerShell)
+func NewResource(m ResourceController) *ResourceRouter {
+	resource := new(ResourceRouter)
 
-	descriptor := createDescriptor(m)
+	descriptor := createDescriptor(m, resource)
+
+	resource.varName = descriptor.varName
 
 	restfuncs := descriptor.GetRestMap()
 	memberfuncs := descriptor.GetGenericMapList("Member")
 	collectionfuncs := descriptor.GetGenericMapList("Collection")
 
-	resource.Member = router.NewRouter()
+	resource.Member = router.New()
 	resource.Member.Routing = memberSignaler{varName: descriptor.varName, indexer: m}
 	memberactions := splitter{}
 	memberactions.get = firstNonNilMiddleware([]rack.Middleware{restfuncs["show"], memberfuncs.get[""], memberfuncs.all[""]})
@@ -126,13 +157,14 @@ func NewResource(m ResourceController) *ControllerShell {
 	memberactions.put = firstNonNilMiddleware([]rack.Middleware{restfuncs["update"], memberfuncs.put[""], memberfuncs.all[""]})
 	memberactions.delete = firstNonNilMiddleware([]rack.Middleware{restfuncs["destroy"], memberfuncs.delete[""], memberfuncs.all[""]})
 	resource.Member.Action = memberactions
+	resource.Member.Name = memberNamer{varName: descriptor.varName}
 
 	if restfuncs["edit"] != nil {
 		memberfuncs.get["edit"] = restfuncs["edit"]
 	}
-	AddMapListRoutes(resource.Member, memberfuncs)
+	addMapListRoutes(resource.Member, memberfuncs)
 
-	resource.Collection = router.NewRouter()
+	resource.Collection = router.New()
 	resource.Collection.Routing = collectionSignaler{name: descriptor.routeName}
 	collectionactions := splitter{}
 	collectionactions.get = firstNonNilMiddleware([]rack.Middleware{restfuncs["index"], collectionfuncs.get[""], collectionfuncs.all[""]})
@@ -140,19 +172,16 @@ func NewResource(m ResourceController) *ControllerShell {
 	collectionactions.put = firstNonNilMiddleware([]rack.Middleware{collectionfuncs.put[""], collectionfuncs.all[""]})
 	collectionactions.delete = firstNonNilMiddleware([]rack.Middleware{collectionfuncs.delete[""], collectionfuncs.all[""]})
 	resource.Collection.Action = collectionactions
+	resource.Collection.Name = router.NameString(descriptor.routeName)
 
 	if restfuncs["new"] != nil {
 		collectionfuncs.get["new"] = restfuncs["new"]
 	}
-	AddMapListRoutes(resource.Collection, collectionfuncs)
+	addMapListRoutes(resource.Collection, collectionfuncs)
 
 	resource.Collection.AddRoute(resource.Member)
 
 	return resource
-}
-
-func (this *ControllerShell) Router() *router.Router {
-	return this.Collection
 }
 
 //use this to create the root of your routes (e.g. for http://example.com/)
@@ -165,7 +194,7 @@ func NewRoot(m rack.Middleware) *router.Router {
 // intermediate will be ran if the namespace is used (http://example.com/admin/posts).
 // final will be ran if the namespace is the destination (http://example.com/admin)
 func NewNamespace(name string, intermediate router.Signaler, final rack.Middleware) *router.Router {
-	r := router.NewRouter()
+	r := router.New()
 	r.Routing = router.SignalFunc(func(vars map[string]interface{}) bool {
 		section := router.V(vars).CurrentSection()
 

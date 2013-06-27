@@ -22,13 +22,17 @@ type Heart struct {
 	finish func()
 }
 
+type Model interface {
+	ID() string
+}
+
 //An Indexer should be able to take an index and return a resource
 //s is the index of the resource
 //vars is the list of variables that have been assembled so far
 //resource is the found resource
 //found is whether or not anything was actually found
 type Indexer interface {
-	Find(s string, vars map[string]interface{}) (resource interface{}, found bool)
+	Find(s string, vars map[string]interface{}) (resource Model, found bool)
 }
 
 //HasHeart is an interface that exposes the parts of a controller that the mapper needs that can be completed by having a Heart in your class
@@ -39,6 +43,7 @@ type HasHeart interface {
 
 //A ResourceController generally needs a Heart
 // and needs to be able to index resources.
+// and should be able to describe the route that leads to it
 //You should also add in control functions.
 //The following Restful routes will automatically be created for you if you create the appropriate functions:
 // • Index() (Collection - GET /)

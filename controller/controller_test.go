@@ -30,11 +30,11 @@ type CoinModel struct {
 	Name, Description string
 }
 
-func (this CoinModel) Url() string {
-	return "/coins/" + this.Name
+func (this CoinModel) ID() string {
+	return this.Name
 }
 
-func (this Coins) Find(name string, vars map[string]interface{}) (interface{}, bool) {
+func (this Coins) Find(name string, vars map[string]interface{}) (Model, bool) {
 	description, ok := coins[name]
 	if ok {
 		return &CoinModel{Name: name, Description: description}, true
@@ -82,7 +82,7 @@ func (this Coins) Update() {
 	_, prexisting := coins[name]
 	if prexisting && name != old.Name {
 		this.AddFlash("coin collision; aborting update")
-		this.RedirectTo("/coins")
+		this.RedirectTo("/coins/")
 		return
 	}
 	if name == "" {
@@ -162,6 +162,7 @@ func StatusFrom(t *testing.T, method, url string, body io.Reader) int {
 
 func CompareStrings(t *testing.T, a, b string) {
 	if a != b {
+		print("Fail\n")
 		t.Error("Should get \"" + b + "\", not \"" + a + "\"")
 	}
 }
@@ -193,35 +194,38 @@ func Test_Show(t *testing.T) {
 
 func Test_CreateAndDelete(t *testing.T) {
 	text, res := ResponseFrom(t, "POST", "http://localhost:5001/coins/", bytes.NewBufferString("Coin[Name]=half-dollar&Coin[Description]=what%20is%20it%3f"))
-	CompareDestination(t, res, "http://localhost:5001/coins/half-dollar")
+	CompareDestination(t, res, "http://localhost:5001/coins/half-dollar/")
 	CompareStrings(t, text, "half-dollar - what is it?")
 	CompareStrings(t, TextFrom(t, "GET", "http://localhost:5001/coins/", nil), "These are my coins: dime half-dollar nickel penny quarter ")
 
 	text, res = ResponseFrom(t, "DELETE", "http://localhost:5001/coins/half-dollar", nil)
 	CompareStatus(t, res.StatusCode, 302)
-	CompareStrings(t, res.Header.Get("Location"), "/coins")
-
+	CompareStrings(t, res.Header.Get("Location"), "/coins/")
+	print("A\n")
 	CompareStrings(t, TextFrom(t, "GET", "http://localhost:5001/coins/", nil), "These are my coins: dime nickel penny quarter ")
+	print("B\n")
 }
 
 func Test_Update(t *testing.T) {
 	text, res := ResponseFrom(t, "PUT", "http://localhost:5001/coins/penny", bytes.NewBufferString("Coin[Description]=why%20are%20these%20still%20made%3f"))
-	CompareDestination(t, res, "http://localhost:5001/coins/penny")
+	CompareDestination(t, res, "http://localhost:5001/coins/penny/")
 	CompareStrings(t, res.Request.Method, "GET")
 	CompareStrings(t, text, "penny - why are these still made?")
 
 	text, res = ResponseFrom(t, "PUT", "http://localhost:5001/coins/penny", bytes.NewBufferString("Coin[Name]=worthless"))
-	CompareDestination(t, res, "http://localhost:5001/coins/worthless")
+	CompareDestination(t, res, "http://localhost:5001/coins/worthless/")
 	CompareStrings(t, res.Request.Method, "GET")
 	CompareStrings(t, text, "worthless - why are these still made?")
 
 	text, res = ResponseFrom(t, "PUT", "http://localhost:5001/coins/worthless", bytes.NewBufferString("Coin[Name]=nickel"))
-	CompareDestination(t, res, "http://localhost:5001/coins")
+	CompareDestination(t, res, "http://localhost:5001/coins/")
 	CompareStrings(t, res.Request.Method, "GET")
+	print("C\n")
 	CompareStrings(t, text, "coin collision; aborting update These are my coins: dime nickel quarter worthless ")
+	print("D\n")
 
 	text, res = ResponseFrom(t, "PUT", "http://localhost:5001/coins/worthless", bytes.NewBufferString("Coin[Name]=penny&Coin[Description]=useless"))
-	CompareDestination(t, res, "http://localhost:5001/coins/penny")
+	CompareDestination(t, res, "http://localhost:5001/coins/penny/")
 	CompareStrings(t, res.Request.Method, "GET")
 	CompareStrings(t, text, "penny - useless")
 }

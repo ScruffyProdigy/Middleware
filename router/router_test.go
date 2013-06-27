@@ -53,22 +53,33 @@ var CoinCollectionWare rack.Func = func(vars map[string]interface{}, next func()
 	v.AppendMessageString("</ul></html>")
 }
 
-var CoinSignaler SignalFunc = func(vars map[string]interface{}) bool {
-	coinName := (V)(vars).CurrentSection()
-	coinInfo, exists := coins[coinName]
-	if !exists {
-		return false
-	}
-	vars["Info"] = []byte(coinInfo)
-	return true
-}
-
-var CoinMemberWare rack.Func = func(vars map[string]interface{}, next func()) {
-	(httper.V)(vars).SetMessage(vars["Info"].([]byte))
-}
-
 func init() {
-	MemberRoute := Route(CoinSignaler, CoinMemberWare)
+	var MemberRoute *Router = New()
+
+	MemberRoute.Routing = SignalFunc(func(vars map[string]interface{}) bool {
+		coinName := (V)(vars).CurrentSection()
+		coinInfo, exists := coins[coinName]
+		if !exists {
+			return false
+		}
+		vars["Name"] = coinName
+		vars["Info"] = coinInfo
+		return true
+	})
+
+	MemberRoute.Action = rack.Func(func(vars map[string]interface{}, next func()) {
+		name := vars["Name"].(string)
+		info := vars["Info"].(string)
+		(httper.V)(vars).SetMessageString(name + " - " + info + " - " + MemberRoute.Route(vars))
+	})
+
+	MemberRoute.Name = NamerFunc(func(vars map[string]interface{}, prev func() string) string {
+		name := "(coin)"
+		if coin, ok := vars["Name"].(string); ok {
+			name = coin
+		}
+		return prev() + name + "/"
+	})
 
 	CollectionRoute := BasicRoute("coins", CoinCollectionWare)
 	CollectionRoute.AddRoute(MemberRoute)
@@ -101,10 +112,10 @@ func Example_CoinMembers() {
 	//Nota Buena: go fmt messes this next section up - it puts tabs in, which then makes the output incorrect
 
 	/* output:
-	   useless
-	   heavy and annoying
-	   light and annoying
-	   not obsolete quite yet
+penny - useless - /coins/penny/
+nickel - heavy and annoying - /coins/nickel/
+dime - light and annoying - /coins/dime/
+quarter - not obsolete quite yet - /coins/quarter/
 	*/
 }
 

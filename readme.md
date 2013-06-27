@@ -3,6 +3,7 @@
 These are middleware that are each designed to be part of a Rack specified in https://github.com/ScruffyProdigy/TheRack
 Look at the documentation in each folder for more information about how they are used
 
+*   **controller** - Implements the routing and controller aspects of an MVC architecture, by allowing you to define which routes of a resource are implemented by simply defining the appropriate methods
 *	**encapsulator** - Typically used to wrap the current body in a layout  
 *	**errorhandler** - Used to catch any panics from any later middleware, and, if so, passes a 500 Internal Service Error to the previous ones  
 *	**interceptor** - A lightweight router that uses a map[string]Middleware lookup on the requested URL to pass the request on to other middleware  

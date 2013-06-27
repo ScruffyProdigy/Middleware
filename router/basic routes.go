@@ -34,9 +34,10 @@ func (this *basicRoute) Run(vars map[string]interface{}) bool {
 }
 
 func createMethodRoute(method, name string, m rack.Middleware) (result *Router) {
-	result = NewRouter()
+	result = New()
 	result.Routing = &basicRoute{method: method, name: name, methodMatters: true}
 	result.Action = m
+	result.Name = NameString(name)
 	return
 }
 
@@ -61,9 +62,10 @@ func Delete(name string, m rack.Middleware) (result *Router) {
 }
 
 func BasicRoute(name string, m rack.Middleware) (result *Router) {
-	result = NewRouter()
+	result = New()
 	result.Routing = &basicRoute{name: name, method: "", methodMatters: false}
 	result.Action = m
+	result.Name = NameString(name)
 	return
 }
 
