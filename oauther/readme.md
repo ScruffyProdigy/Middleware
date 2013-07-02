@@ -9,6 +9,27 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/oauther/...`
 
+## Usage
+
+* Find or create an implementation of Oauther for the site you wish to access
+	* Google+ and Facebook implementations can be found in this project
+* Fill out the needed fields within your implementation
+	* Typically, a description of each of the fields and where to find them are provided
+* Create an Interceptor
+	* http://github.com/ScruffyProdigy/Middleware/interceptor for more details
+* Call oauther.SetIntercepts() to set correct intercepts
+	* The first parameter is the intercept you created in the previous step
+	* The second parameter is the Oauther you filled out in the step before that
+	* The third parameter is the function you will create in the next step
+* A token is needed to access info on the website you're contacting; create the function that describes what to do once you have obtained the token
+	* The function should take your Oauther, and the token obtained, and return a middleware
+		* Generally, the middleware will need to store the token somewhere (your call on this)
+		* And/or the middleware will need to immediately access the website (see the next step)
+* Any time you want to access information from the site, call GetSite()
+	* The first two parameters are the Oauther and the token
+	* The third parameter is the URL you want to access information from
+	* The fourth parameter is a function that handles the response received from the website
+
 ## Example
 
 	package main

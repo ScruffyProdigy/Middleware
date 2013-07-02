@@ -4,6 +4,11 @@ This is used to set a logger that all other middleware will have access to
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/logger`
 
+## Usage
+
+* Generally just add logger.StandardLogger to your rack before anything that will need to log data
+* Alternatively call logger.Set() to get a non-standard logger, and then add that to your rack instead
+
 ## Example
 
 	package main

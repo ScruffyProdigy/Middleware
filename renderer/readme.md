@@ -8,6 +8,15 @@ This uses templates from TheTemplater to simplify rendering	(github.com/ScruffyP
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/renderer`
 
+##  Usage
+
+* Put all of your templates into a single folder (or subfolder within that folder)
+* Use the templater middleware, and direct it to that folder
+	* Make sure to add the templater to your rack before calling this one
+* Add a renderer.Renderer to your rack
+	* set the Template field of the struct to the location of the template within your template folder
+	* alternatively, you can simply call the Render() method as a vars func
+
 ## 	Example
 
 __main.go__

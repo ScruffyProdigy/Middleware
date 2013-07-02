@@ -7,6 +7,12 @@ The form values need to be parsed before this is ran, so a middleware such as pa
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/methoder`
 
+## Usage
+
+* Add methoder.Override to your rack
+	* Somewhere after the form has been parsed
+	* Somewhere before any middleware that inspects the method of the request
+
 ## 	Example
 
     package main

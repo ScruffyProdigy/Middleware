@@ -3,7 +3,6 @@ package statuser
 import (
 	"fmt"
 	"github.com/ScruffyProdigy/Middleware/encapsulator"
-	"github.com/ScruffyProdigy/Middleware/statuser"
 	"github.com/ScruffyProdigy/Middleware/templater"
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
@@ -40,7 +39,7 @@ func Example_General() {
 	rackup := rack.New()
 	rackup.Add(templater.GetTemplates("test_templates"))
 	rackup.Add(encapsulator.AddLayout)
-	rackup.Add(statuser.SetErrorLayout)
+	rackup.Add(SetErrorLayout)
 	rackup.Add(ErrorWare)
 
 	conn := httper.HttpConnection(":4014")
@@ -55,7 +54,7 @@ func Example_Specific() {
 	rackup := rack.New()
 	rackup.Add(templater.GetTemplates("test_templates"))
 	rackup.Add(encapsulator.AddLayout)
-	rackup.Add(statuser.SetErrorLayout)
+	rackup.Add(SetErrorLayout)
 
 	conn := httper.HttpConnection(":3001")
 	go conn.Go(rackup)
@@ -69,7 +68,7 @@ func Example_SpecificOverride() {
 	rackup := rack.New()
 	rackup.Add(templater.GetTemplates("test_templates"))
 	rackup.Add(encapsulator.AddLayout)
-	rackup.Add(statuser.SetErrorLayout)
+	rackup.Add(SetErrorLayout)
 	rackup.Add(ErrorWare2)
 
 	conn := httper.HttpConnection(":3002")

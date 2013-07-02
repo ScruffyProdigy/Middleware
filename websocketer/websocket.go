@@ -6,6 +6,7 @@ import (
 	"github.com/ScruffyProdigy/TheRack/httper"
 	"github.com/ScruffyProdigy/TheRack/rack"
 	"io"
+	"reflect"
 	"strings"
 )
 
@@ -15,26 +16,23 @@ const (
 	websocketIndex = "Websocket"
 )
 
-func New() *Middleware {
-	this := new(Middleware)
-	this.messageType = websocket.Message
-	this.onStorage = func() interface{} {
-		var m string
-		return &m
-	}
+
+func New() *Controller {
+	this := new(Controller)
 	this.onOpen = rack.New()
 	this.onMessage = rack.New()
 	this.onClose = rack.New()
+	this.ReceiveTextMessages()
 	return this
 }
 
-type Middleware struct {
+type Controller struct {
 	messageType                websocket.Codec
 	onStorage                  func() interface{} //should return a pointer to whatever you want the messages stored in
 	onOpen, onMessage, onClose *rack.Rack
 }
 
-func (this Middleware) Run(vars map[string]interface{}, next func()) {
+func (this Controller) Run(vars map[string]interface{}, next func()) {
 	r := (httper.V)(vars).GetRequest()
 	if strings.ToLower(r.Header.Get("Upgrade")) != "websocket" {
 		//if it wasn't a websocket request, ignore it
@@ -53,13 +51,11 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 				//Get the message from the client
 				message := this.onStorage()
 				err := this.messageType.Receive(ws, message)
+				
 				//If there are no messages, we're done here
 				if err != nil {
 					if err != io.EOF {
-						lg := (logger.V)(vars).Get()
-						if lg != nil {
-							lg.Println(err)
-						}
+						(logger.V)(vars).Println(err)
 						continue
 					} else {
 						break
@@ -68,7 +64,7 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 
 				//respond to the message in a goroutine
 				go func() {
-					vars[messageIndex] = message
+					vars[messageIndex] = reflect.Indirect(reflect.ValueOf(message)).Interface()
 					this.onMessage.Run(vars, func() {})
 
 					//If we have a response, send it back
@@ -87,28 +83,41 @@ func (this Middleware) Run(vars map[string]interface{}, next func()) {
 	}
 }
 
-func (this *Middleware) UseJSON() {
+func (this *Controller) ReceiveJSONObjects(example interface{}) {
 	this.messageType = websocket.JSON
+	t := reflect.TypeOf(example)
+	
+	this.onStorage = func() interface{} {
+		return reflect.New(t).Interface()
+	}
 }
 
-func (this *Middleware) UseMessage() {
+func (this *Controller) ReceiveTextMessages() {
 	this.messageType = websocket.Message
+	this.onStorage = func() interface{} {
+		var m string
+		return &m
+	}
 }
 
-func (this Middleware) OnOpen(m rack.Middleware) {
+func (this *Controller) ReceiveBinaryMessages() {
+	this.messageType = websocket.Message
+	this.onStorage = func() interface{} {
+		var m []byte
+		return &m
+	}
+}
+
+func (this Controller) OnOpen(m rack.Middleware) {
 	this.onOpen.Add(m)
 }
 
-func (this Middleware) OnMessage(m rack.Middleware) {
+func (this Controller) OnMessage(m rack.Middleware) {
 	this.onMessage.Add(m)
 }
 
-func (this Middleware) OnClose(m rack.Middleware) {
+func (this Controller) OnClose(m rack.Middleware) {
 	this.onClose.Add(m)
-}
-
-func (this *Middleware) OnStorage(f func() interface{}) {
-	this.onStorage = f
 }
 
 type V map[string]interface{}

@@ -70,3 +70,11 @@ func (vars V) AddFlash(s string) {
 	}
 	vars.Set(flashesIndex, a)
 }
+
+func (vars V) Flashes() []string {
+	result := vars[flashesIndex]
+	if result != nil {
+		return result
+	}
+	return []string{}
+}

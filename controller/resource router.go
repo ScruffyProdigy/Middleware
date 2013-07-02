@@ -83,12 +83,12 @@ type memberNamer struct {
 	varName string
 }
 
-func (this memberNamer) Run(vars map[string]interface{}, prev func() string) string {
+func (this memberNamer) Run(vars map[string]interface{}) string {
 	name := "(" + this.varName + ")"
 	if obj, ok := vars[this.varName].(Model); ok {
 		name = obj.ID()
 	}
-	return prev() + name + "/"
+	return name
 }
 
 type collectionSignaler struct {

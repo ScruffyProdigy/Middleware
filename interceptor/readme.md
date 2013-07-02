@@ -4,6 +4,13 @@ This is a lightweight routing system that uses a simple lookup on the request UR
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/interceptor`
 
+## Usage
+
+* Call interceptor.New() to create a new interceptor
+* For each URL you want to respond to, call the Intercept() method from your interceptor
+	* send it the URL you want to respond to, and a middleware that gets called then
+* Add the interceptor into your rack
+
 ## Example
 
 	package main

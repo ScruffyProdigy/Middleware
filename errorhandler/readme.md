@@ -5,6 +5,10 @@ Previous Middleware are typically used to filter the error into something more p
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/errorhandler`
 
+## Usage
+
+* Just add errorhandler.ErrorHandler to your rack
+
 ## Example
 
 	package main

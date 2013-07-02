@@ -1,11 +1,28 @@
 #	Sessioner
 This middleware loads a session for any future middleware, and then saves the session before passing control back to previous middleware
 
-## 	Dependencies
-This uses the Gorilla Session module to implement sessions (code.google.com/p/gorilla/sessions)
-
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/sessioner`
+
+##  Usage
+
+* Add sessioner.Middleware to your rack
+	* Must be added before any middleware that takes advantage of any of the following functions:
+* To save to the session, call (sessioner.V)(vars).Set()
+	* The first parameter is the name of the variable that you are setting
+	* The second parameter is the value you are setting it to
+* To access the session, call (sessioner.V)(vars).Get()
+	* The only parameter is the name of the variable that you are getting
+	* returns the value of that parameter, or nil if it doesn't exist
+* To clear a session variable call (sessioner.V)(vars).Clear()
+	* The only parameter is the name of the variable that you are clearing
+	* returns the old value of that parameter, or nil if it never existed
+* To add "flashes", call (sessioner.V)(vars).AddFlash()
+	* The only parameter is a string, which will get appended to the flashes currently available
+	* flashes are only available upon a redirect or reload, and are then destroyed
+* To retrieve "flashes", call (sessioner.V)(vars).Flashes()
+	* Will return a slice of flashes
+	* flashes are only available upon a redirect or reload, and are then destroyed
 
 ## 	Example
 

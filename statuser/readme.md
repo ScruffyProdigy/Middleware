@@ -1,11 +1,23 @@
 #	Statuser
 This Middleware looks at the HTTP status code sent down from future Middleware, and looks through the available templates to set an appropriate one.  This is typically used with Encapsulator (github.com/ScruffyProdigy/Middleware/encapsulator) to actually apply the template
 
-## 	Dependencies
-This uses TheTemplater to figure out which templates are available (github.com/ScruffyProdigy/TheTemplater)
-
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/statuser`
+
+## Usage
+
+* Generally, you can just add statuser.SetErrorLayout to your rack
+	* should add it after both templater and encapsulator in order for it to work properly
+	* should add it before any middleware that might set the status on the way back
+	* will look inside the "layouts" template folder, set the "Layout" variable to the proper template if found, and set the "Error" variable to the appropriate status code
+	* if you want to use a different setup than that, you will need to use a custom setting
+* To create a custom setting, you can add a statuser.Statuser to your rack, and fill in the settings manually
+	* "Folder" is the template folder it will look into
+	* "LayoutVar" is the name of the variable it will set to the best template it finds
+	* "ErrorVar" is the variable it will set to the response status code
+	* you should add this after the templater middleware in order for it to act properly
+	* you should add it before any middleware that might set the status on the way back
+
 
 ## 	Example
 

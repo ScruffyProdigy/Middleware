@@ -40,13 +40,13 @@ func (this *Router) SetParent(parent *Router) {
 	this.parent = parent
 }
 
-func (this *Router) Route(vars map[string]interface{}) string {
-	return this.Name.Run(vars, func() string {
-		if this.parent != nil {
-			return this.parent.Route(vars)
-		}
-		return ""
-	})
+func (this *Router) Route(vars map[string]interface{}) (route string) {
+	if this.parent != nil {
+		route = this.parent.Route(vars)
+	}
+	route += this.Name.Run(vars)
+	route += "/"
+	return
 }
 
 func (this *Router) Run(vars map[string]interface{}, next func()) {
@@ -83,17 +83,17 @@ func (this SignalFunc) Run(vars map[string]interface{}) bool {
 }
 
 type Namer interface {
-	Run(vars map[string]interface{}, prev func() string) string
+	Run(vars map[string]interface{}) string
 }
 
-type NamerFunc func(vars map[string]interface{}, prev func() string) string
+type NamerFunc func(vars map[string]interface{}) string
 
-func (this NamerFunc) Run(vars map[string]interface{}, prev func() string) string {
-	return this(vars, prev)
+func (this NamerFunc) Run(vars map[string]interface{}) string {
+	return this(vars)
 }
 
 type NameString string
 
-func (this NameString) Run(vars map[string]interface{}, prev func() string) string {
-	return prev() + string(this) + "/"
+func (this NameString) Run(vars map[string]interface{}) string {
+	return string(this)
 }

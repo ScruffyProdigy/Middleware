@@ -18,6 +18,8 @@ func getErrorString(rec interface{}) string {
 	return fmt.Sprint(rec)
 }
 
+//ErrorHandler is the middleware that you insert into your rack.
+// if any downstream Middleware panics, ErrorHandler will catch it and recover
 var ErrorHandler rack.Func = func(vars map[string]interface{}, next func()) {
 	defer func() {
 		rec := recover()

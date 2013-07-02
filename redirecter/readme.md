@@ -5,6 +5,13 @@ It also provides a more direct function that another middleware can call directl
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/redirecter`
 
+##  Usage
+
+* Add a redirecter.Redirecter to your rack
+	* You will need to supply the URL in the Path field of the struct
+* Alternatively, you can simply use the vars, and call the Redirect function
+	* The only parameter is the URL you wish to redirect to
+
 ## 	Example
 
 	package main

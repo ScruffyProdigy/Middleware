@@ -15,10 +15,11 @@ type StaticProvider struct {
 
 //When getting a new StaticProvider, you must specify the prefix you want incoming requests, and where the files are located
 func New(prefix, loc string) *StaticProvider {
-	sp := new(StaticProvider)
-	sp.prefix = prefix
-	sp.fileLocation = loc
-	return sp
+	result := &StaticProvider{
+		prefix:prefix,
+		fileLocation:loc,
+	}
+	return result
 }
 
 //tests whether a starts with b
