@@ -17,8 +17,10 @@ const (
 	later middleware will use it to direct control
 */
 
+// V is a type you can cast your vars to in order to access the following functions
 type V map[string]interface{}
 
+// Parse will parse the URL into sections and store each section
 func (vars V) Parse() []string {
 	r := (httper.V)(vars).GetRequest()
 	parsedRoute := strings.Split(r.URL.Path, "/")
@@ -35,6 +37,7 @@ func (vars V) Parse() []string {
 	return newParsedRoute
 }
 
+// CurrentSection() will return the section of the URL that we are currently looking at to try to route properly
 func (vars V) CurrentSection() string {
 	parsedRoute, ok := vars[parsedRouteIndex].([]string)
 	if !ok {
@@ -59,6 +62,7 @@ func (vars V) CurrentSection() string {
 	return result
 }
 
+// nextSection() indicates that we have found a subrouter for the current section of the URL, and that it is time to move onto the next
 func (vars V) nextSection() {
 	index, ok := vars[currentSectionIndex].(int)
 	if !ok {
@@ -67,6 +71,7 @@ func (vars V) nextSection() {
 	vars[currentSectionIndex] = index + 1
 }
 
+//IsCaseSensitive() returns whether or not to assume that the route should be case sensitive
 func (vars V) IsCaseSensitive() bool {
 	result, ok := vars[caseSensitiveIndex].(bool)
 
@@ -76,10 +81,12 @@ func (vars V) IsCaseSensitive() bool {
 	return false
 }
 
+//SetCaseSensitive() sets the router to be case sensitive
 func (vars V) SetCaseSensitive() {
 	vars[caseSensitiveIndex] = true
 }
 
+//SetCaseInsensitive() is the default and sets the router to be case insensitive
 func (vars V) SetCaseInsensitive() {
 	vars[caseSensitiveIndex] = false
 }

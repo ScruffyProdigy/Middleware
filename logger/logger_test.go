@@ -17,7 +17,7 @@ var HelloWorldWare rack.Func = func(vars map[string]interface{}, next func()) {
 
 func Example_Basic() {
 	rackup := rack.New()
-	rackup.Add(Set(os.Stdout, "Log Test - ", 0))
+	rackup.Add(New(os.Stdout, "Log Test - ", 0))
 	rackup.Add(HelloWorldWare)
 
 	conn := httper.HttpConnection(":4003")

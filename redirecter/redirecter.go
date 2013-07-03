@@ -16,10 +16,12 @@ type Redirecter struct {
 	Path string
 }
 
+// Run() implements the rack.Middleware interface
 func (this Redirecter) Run(vars map[string]interface{}, next func()) {
 	V(vars).Redirect(this.Path)
 }
 
+// V is a type you can cast your vars to in order to access the following functions
 type V map[string]interface{}
 
 /*

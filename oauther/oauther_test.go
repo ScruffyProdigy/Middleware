@@ -26,14 +26,18 @@ func TokenHandlerFunc(o Oauther, tok *oauth.Token) rack.Middleware {
 }
 
 func getPayload(o Oauther, tok *oauth.Token) (result string) {
-	GetSite(o, tok, "http://localhost:3001/data", func(res *http.Response) {
+	err := GetSite(o, tok, "http://localhost:3001/data", func(res *http.Response) error {
 		bytes, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			result = err.Error()
+			return err
 		} else {
 			result = string(bytes)
+			return nil
 		}
 	})
+	if err != nil {
+		result = err.Error()
+	}
 	return
 }
 
@@ -109,8 +113,7 @@ func init() {
 	go hostconn.Go(hoster.Middleware())
 
 	//set up our site
-	cept := interceptor.New()
-	SetIntercepts(cept, hoster, TokenHandlerFunc)
+	cept := New(hoster, TokenHandlerFunc)
 
 	rackup := rack.New()
 	rackup.Add(sessioner.Middleware)

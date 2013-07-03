@@ -1,3 +1,6 @@
+/*
+Statuser finds appropriate templates for error conditions
+*/
 package statuser
 
 import (
@@ -18,6 +21,7 @@ type Statuser struct {
 	Folder    string //the folder where the layouts are kept
 }
 
+//Run implements the rack.Middleware interface
 func (this Statuser) Run(vars map[string]interface{}, next func()) {
 	next()
 

@@ -61,7 +61,7 @@ func (this VarMultipart) Run(vars map[string]interface{}, next func()) {
 }
 
 /*
-V allows you to recast vars, and get access to a set of functions
+	V is a type you can cast your vars to in order to access the following functions
 */
 type V map[string]interface{}
 

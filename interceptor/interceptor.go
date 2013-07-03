@@ -8,23 +8,29 @@ import (
 	"github.com/ScruffyProdigy/TheRack/rack"
 )
 
+//PreExistingInterceptorError is used when you try to intercept a URL that is already being intercepted
 type PreExistingInterceptorError struct {
 	url string
 }
 
+// implements the error interface
 func (this PreExistingInterceptorError) Error() string {
 	return "Interception '" + this.url + "' already registered!"
 }
 
+// The Interceptor is a Middleware that handles requests by matching them with a list of URLs and passing them off to other corresponding Middleware
 type Interceptor map[string]rack.Middleware
 
-func (this Interceptor) Intercept(url string, exec rack.Middleware) {
+// Intercept tells the interceptor to trap requests matching a specific URL and to pass them to a corresponding Middleware
+func (this Interceptor) Intercept(url string, exec rack.Middleware) error {
 	if this[url] != nil {
-		panic(PreExistingInterceptorError{url})
+		return PreExistingInterceptorError{url}
 	}
 	this[url] = exec
+	return nil
 }
 
+// Run implements the rack.Middleware interface
 func (this Interceptor) Run(vars map[string]interface{}, next func()) {
 	url := httper.V(vars).GetRequest().URL.Path
 	exec := this[url]
@@ -35,6 +41,7 @@ func (this Interceptor) Run(vars map[string]interface{}, next func()) {
 	}
 }
 
+// New gives you a blank interceptor
 func New() Interceptor {
 	return make(Interceptor)
 }

@@ -1,3 +1,6 @@
+/*
+templater helps set up templates for later middleware to render
+*/
 package templater
 
 import (
@@ -12,10 +15,12 @@ const (
 	template_index = "middleware_template_index"
 )
 
+// A Group is a set of templates
 type Group struct {
 	*templater.Group
 }
 
+// Get Templates will return a Middleware that will load a specified folder of templates into your rack environment
 func GetTemplates(loc string) rack.Middleware {
 	t, errs := templater.New(loc)
 
@@ -30,8 +35,10 @@ func GetTemplates(loc string) rack.Middleware {
 	})
 }
 
+// V is a type you can cast your vars to in order to access the following functions
 type V map[string]interface{}
 
+// Render() will render one template to an io.Writer
 func (vars V) Render(template_name string, out io.Writer) error {
 	result, ok := vars[template_index].(Group)
 	if !ok {
@@ -40,6 +47,7 @@ func (vars V) Render(template_name string, out io.Writer) error {
 	return result.Render(template_name, out, vars)
 }
 
+// Exists() checks to see whether or not a template exists
 func (vars V) Exists(template_name string) bool {
 	templates, ok := vars[template_index].(Group)
 	if !ok {

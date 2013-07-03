@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-type Urler interface {
-	Url() string
-}
-
 type dispatchAction struct {
 	descriptor
 	name   string

@@ -1,3 +1,6 @@
+/*
+	Controller is as rails-inspired implementation for an MVC controller
+*/
 package controller
 
 import (
@@ -18,14 +21,20 @@ type ResourceRouter struct {
 	Member     *router.Router //you can add non-RESTful member-level routes here
 }
 
+//ResourceRouter implements the router.HasRouter interface -
+// this returns a router that will direct the user correctly
 func (this *ResourceRouter) Router() *router.Router {
 	return this.Collection
 }
 
+//part of the router.HasRouter interface -
+// the router needs to store the parent, and you need to set this properly in order for the route to be returned properly
 func (this *ResourceRouter) SetParent(parent *router.Router) {
 	this.Collection.SetParent(parent)
 }
 
+//part of the router.HasRouter interface -
+// Return the route that leads to this router
 func (this *ResourceRouter) Route(vars map[string]interface{}) string {
 	_, isMember := vars[this.varName].(Model)
 	if isMember {

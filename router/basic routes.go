@@ -61,6 +61,7 @@ func Delete(name string, m rack.Middleware) (result *Router) {
 	return createMethodRoute("DELETE", name, m)
 }
 
+//BasicRoute returns a Router that acts with a static string
 func BasicRoute(name string, m rack.Middleware) (result *Router) {
 	result = New()
 	result.Routing = &basicRoute{name: name, method: "", methodMatters: false}

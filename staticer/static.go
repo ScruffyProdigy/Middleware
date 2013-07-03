@@ -16,8 +16,8 @@ type StaticProvider struct {
 //When getting a new StaticProvider, you must specify the prefix you want incoming requests, and where the files are located
 func New(prefix, loc string) *StaticProvider {
 	result := &StaticProvider{
-		prefix:prefix,
-		fileLocation:loc,
+		prefix:       prefix,
+		fileLocation: loc,
 	}
 	return result
 }
@@ -30,6 +30,7 @@ func startsWith(a, b string) bool {
 	return false
 }
 
+//Run implements rack.Middleware
 func (this StaticProvider) Run(vars map[string]interface{}, next func()) {
 	r := (httper.V)(vars).GetRequest()
 

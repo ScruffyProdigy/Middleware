@@ -15,12 +15,9 @@ This defines an interface for you to use for an OAuth provider, then takes that 
 	* Google+ and Facebook implementations can be found in this project
 * Fill out the needed fields within your implementation
 	* Typically, a description of each of the fields and where to find them are provided
-* Create an Interceptor
-	* http://github.com/ScruffyProdigy/Middleware/interceptor for more details
-* Call oauther.SetIntercepts() to set correct intercepts
-	* The first parameter is the intercept you created in the previous step
-	* The second parameter is the Oauther you filled out in the step before that
-	* The third parameter is the function you will create in the next step
+* Call oauther.New() to convert your Oauther into a Middleware
+	* The first parameter is the Oauther you filled out in the previous step
+	* The second parameter is the function you will create in the next step
 * A token is needed to access info on the website you're contacting; create the function that describes what to do once you have obtained the token
 	* The function should take your Oauther, and the token obtained, and return a middleware
 		* Generally, the middleware will need to store the token somewhere (your call on this)

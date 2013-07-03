@@ -16,13 +16,17 @@ import (
 	"net/http"
 )
 
-type TokenHandler func(Oauther, *oauth.Token) rack.Middleware
-
+/*
+Oauther is an interface, that if properly implemented, can be turned into a couple of Middleware that can capture an Oauth Token
+*/
 type Oauther interface {
 	Config() *oauth.Config
 	StartUrl() string
 	RedirectUrl() string
 }
+
+// A Token handler allows you to specify what happens once you've received a token
+type TokenHandler func(Oauther, *oauth.Token) rack.Middleware
 
 type codeGetter struct {
 	o Oauther
@@ -53,7 +57,8 @@ func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 	//Step 1: Ensure states match
 	r := httper.V(vars).GetRequest()
 	if r == nil {
-		panic("Request not found")
+		next()
+		return
 	}
 
 	state1 := r.FormValue("state")
@@ -77,17 +82,22 @@ func (this tokenGetter) Run(vars map[string]interface{}, next func()) {
 	process.Run(vars, next)
 }
 
-func SetIntercepts(i interceptor.Interceptor, o Oauther, t TokenHandler) {
+//New converts your Oauther into Middleware, and allows you to do something once you have the token
+func New(o Oauther, t TokenHandler) rack.Middleware {
+	i := interceptor.New()
 	i.Intercept(o.StartUrl(), &codeGetter{o})
 	i.Intercept(o.RedirectUrl(), &tokenGetter{o, t})
+	return i
 }
 
-func GetSite(o Oauther, tok *oauth.Token, site string, handler func(*http.Response)) {
+//GetSite() is the function you use to actually get data from an Oauth provider
+//It requires an Oauther, a token, a URL string, and a callback function for what to do with the response
+func GetSite(o Oauther, tok *oauth.Token, site string, handler func(*http.Response) error) error {
 	t := &oauth.Transport{Config: o.Config(), Token: tok}
 	req, err := t.Client().Get(site)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer req.Body.Close()
-	handler(req)
+	return handler(req)
 }

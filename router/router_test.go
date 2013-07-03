@@ -73,12 +73,12 @@ func init() {
 		(httper.V)(vars).SetMessageString(name + " - " + info + " - " + MemberRoute.Route(vars))
 	})
 
-	MemberRoute.Name = NamerFunc(func(vars map[string]interface{}, prev func() string) string {
+	MemberRoute.Name = NamerFunc(func(vars map[string]interface{}) string {
 		name := "(coin)"
 		if coin, ok := vars["Name"].(string); ok {
 			name = coin
 		}
-		return prev() + name + "/"
+		return name
 	})
 
 	CollectionRoute := BasicRoute("coins", CoinCollectionWare)

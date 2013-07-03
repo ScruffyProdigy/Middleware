@@ -1,3 +1,6 @@
+/*
+methoder creates a way for you to allow HTML forms to submit PUT and DELETE requests, which are useful to allow for a complete restful vocabulary
+*/
 package methoder
 
 import (

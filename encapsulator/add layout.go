@@ -1,3 +1,6 @@
+/*
+	Encapsulator is a middleware that helps to add a layout to a response
+*/
 package encapsulator
 
 import (
@@ -17,6 +20,7 @@ type Encapsulator struct {
 	Folder    string //the folder to look for the layouts in
 }
 
+// Implementation of rack.Middleware
 func (this Encapsulator) Run(vars map[string]interface{}, next func()) {
 	next()
 

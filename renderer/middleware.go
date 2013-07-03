@@ -16,10 +16,12 @@ type Renderer struct {
 	Template string
 }
 
+//Run implements the rack.Middleware interface
 func (this Renderer) Run(vars map[string]interface{}, next func()) {
 	V(vars).Render(this.Template)
 }
 
+// V is a type you can cast your vars to in order to access the following functions
 type V map[string]interface{}
 
 /*
