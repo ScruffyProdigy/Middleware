@@ -1,5 +1,5 @@
 /*
-	Encapsulator will add a layouts to your content
+	Encapsulator will add layouts to your content
 */
 package encapsulator
 
