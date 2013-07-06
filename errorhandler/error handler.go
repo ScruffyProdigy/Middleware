@@ -1,5 +1,5 @@
 /*
-Error Handler Package recovers from any downstream errors, returning an error status instead
+	errorHandler recovers from any downstream errors, returning an error status instead
 */
 package errorhandler
 

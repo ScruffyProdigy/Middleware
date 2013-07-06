@@ -1,5 +1,5 @@
 /*
-	Interceptor does lightweight routing by comparing static URLs - good for APIs
+	interceptor does lightweight routing by comparing static URLs - good for APIs
 */
 package interceptor
 

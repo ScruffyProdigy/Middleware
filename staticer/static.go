@@ -1,5 +1,5 @@
 /*
-	Staticer will render any static files it finds
+	staticer will render any static files it finds
 */
 package staticer
 

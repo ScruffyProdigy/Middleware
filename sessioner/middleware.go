@@ -1,5 +1,5 @@
 /*
-Session will load and save session variables for you
+	sessioner will load and save session variables for you
 */
 package sessioner
 

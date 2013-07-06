@@ -1,5 +1,5 @@
 /*
-Methoder allows for POST requests to pose as PUT or DELETE requests
+	methoder allows for POST requests to pose as PUT or DELETE requests
 */
 package methoder
 

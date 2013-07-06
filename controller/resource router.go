@@ -1,5 +1,5 @@
 /*
-	Controller is a rails-inspired implementation for an MVC controller
+	controller is a rails-inspired implementation for an MVC controller
 */
 package controller
 

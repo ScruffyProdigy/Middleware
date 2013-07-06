@@ -1,5 +1,5 @@
 /*
-renderer renders a template for you, either as a middleware or a vars operation
+	renderer renders a template for you, either as a middleware or a vars method
 */
 package renderer
 

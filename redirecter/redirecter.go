@@ -1,5 +1,5 @@
 /*
-redirecter makes it simple to redirect the user to another url - either as a middleware, or a vars operation
+	redirecter makes it simple to redirect the user to another url - either as a middleware, or a vars method
 */
 package redirecter
 

@@ -1,5 +1,5 @@
 /*
-Varser is a lightweight variable-setter
+	varser is a lightweight variable-setter
 */
 package varser
 
