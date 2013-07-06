@@ -1,7 +1,6 @@
 /*
 	Oather provides an interface for any OAuth service to work in with a rack based system
 */
-
 package oauther
 
 import (
