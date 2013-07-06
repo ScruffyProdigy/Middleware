@@ -1,5 +1,5 @@
 /*
-	parser helps parse the http request for values or files sent in with it
+	parser helps parse the http request for values or files
 */
 package parser
 

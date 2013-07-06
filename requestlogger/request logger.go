@@ -1,5 +1,5 @@
 /*
-	requestLogger will log all requests to your web server
+	requestlogger will log all requests to your web server
 */
 package requestlogger
 

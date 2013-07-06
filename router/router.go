@@ -1,5 +1,5 @@
 /*
-	router creates a branching routing system
+	router creates a branch based routing system
 */
 package router
 

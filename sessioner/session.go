@@ -1,5 +1,5 @@
 /*
-	session wraps gorilla sessions within a Rack Middleware framework
+	sessioner stores your session variables
 */
 package sessioner
 
