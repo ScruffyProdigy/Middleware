@@ -1,5 +1,5 @@
 /*
-Logger helps give a way for middleware to output debugging information or other logged info
+Logger makes it easy to log information in later Middleware
 */
 package logger
 

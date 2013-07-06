@@ -1,5 +1,5 @@
 /*
-	Encapsulator is a middleware that helps to add a layout to a response
+	Encapsulator will add a layouts to your content
 */
 package encapsulator
 

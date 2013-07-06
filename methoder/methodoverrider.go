@@ -1,5 +1,5 @@
 /*
-methoder creates a way for you to allow HTML forms to submit PUT and DELETE requests, which are useful to allow for a complete restful vocabulary
+Methoder allows for POST requests to pose as PUT or DELETE requests
 */
 package methoder
 

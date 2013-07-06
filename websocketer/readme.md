@@ -4,6 +4,9 @@ Websocketer provides a simple rack based interface for starting up a websocket, 
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/websocketer`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/websocketer
+
 ## Usage
 
 * Call websocketer.New() to get a Controller object

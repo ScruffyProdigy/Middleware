@@ -4,6 +4,9 @@ Parser is a simple body parsing middleware that will parse a URL or Form, and st
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/parser`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/parser
+
 ##  Usage
 
 * If you are reading a generic form (ie from a POST or a PUT), just add parser.Form to your rack

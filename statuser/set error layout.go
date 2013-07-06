@@ -1,5 +1,5 @@
 /*
-Statuser finds appropriate templates for error conditions
+Statuser makes sure appropriate templates get called for error conditions
 */
 package statuser
 

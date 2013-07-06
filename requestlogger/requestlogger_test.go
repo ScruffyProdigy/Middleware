@@ -10,7 +10,7 @@ import (
 
 func Example_Basic() {
 	rackup := rack.New()
-	rackup.Add(logger.Set(os.Stdout, "", 0))
+	rackup.Add(logger.New(os.Stdout, "", 0))
 	rackup.Add(Logger)
 
 	conn := httper.HttpConnection(":4009")

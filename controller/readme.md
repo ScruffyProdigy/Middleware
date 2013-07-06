@@ -3,6 +3,11 @@ Controller
 
 Controller is as rails-inspired implementation for an MVC controller
 
+Documentation
+-------------
+
+http://godoc.org/github.com/ScruffyProdigy/Middleware/controller
+
 Usage
 -----
 

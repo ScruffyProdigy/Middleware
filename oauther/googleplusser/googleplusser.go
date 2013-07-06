@@ -36,15 +36,15 @@ func New(data Data) *GooglePlus {
 	return gp
 }
 
-func (this *GooglePlus) GetStartUrl() string {
+func (this *GooglePlus) StartUrl() string {
 	return "/" + this.data.StartUri
 }
 
-func (this *GooglePlus) GetRedirectUrl() string {
+func (this *GooglePlus) RedirectUrl() string {
 	return "/" + this.data.RedirectUri
 }
 
-func (this *GooglePlus) GetConfig() *oauth.Config {
+func (this *GooglePlus) Config() *oauth.Config {
 	if this.config == nil {
 		this.config = new(oauth.Config)
 		this.config.ClientId = this.data.ClientID

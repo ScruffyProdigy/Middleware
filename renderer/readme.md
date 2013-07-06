@@ -5,6 +5,9 @@ It also provides a more direct function so that another Middleware can render th
 ## 	Dependencies
 This uses templates from TheTemplater to simplify rendering	(github.com/ScruffyProdigy/TheTemplater)
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/renderer
+
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/renderer`
 

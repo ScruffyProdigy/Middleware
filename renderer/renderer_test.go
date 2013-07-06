@@ -30,7 +30,7 @@ func GetFrom(loc string) {
 
 func Example_Render() {
 	rackup := rack.New()
-	rackup.Add(logger.Set(os.Stdout, "", 0))
+	rackup.Add(logger.New(os.Stdout, "", 0))
 	rackup.Add(templater.GetTemplates("./test_templates"))
 	rackup.Add(rack.Func(func(vars map[string]interface{}, next func()) {
 		vars["Object"] = "World"

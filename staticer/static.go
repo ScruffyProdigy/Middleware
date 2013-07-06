@@ -1,5 +1,5 @@
 /*
-	Staticer is a Middleware used to provide access to static files
+	Staticer will render any static files it finds
 */
 package staticer
 

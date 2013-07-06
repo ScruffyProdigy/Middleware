@@ -4,6 +4,9 @@ This Middleware looks at the HTTP status code sent down from future Middleware, 
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/statuser`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/statuser
+
 ## Usage
 
 * Generally, you can just add statuser.SetErrorLayout to your rack
@@ -28,22 +31,21 @@ __main.go__
 	import (
 		"github.com/ScruffyProdigy/Middleware/encapsulator"
 		"github.com/ScruffyProdigy/Middleware/statuser"
+		"github.com/ScruffyProdigy/Middleware/templater"
 		"github.com/ScruffyProdigy/TheRack/httper"
 		"github.com/ScruffyProdigy/TheRack/rack"
-		"github.com/ScruffyProdigy/TheTemplater/templater"
 	)
 
 	func main() {
-		templater.LoadFromFiles("templates", nil)
-
 		rackup := rack.New()
+		rackup.Add(templater.GetTemplates("./templates"))
 		rackup.Add(encapsulator.AddLayout)
 		rackup.Add(statuser.SetErrorLayout)
 
 		conn := httper.HttpConnection(":3000")
 		conn.Go(rackup)
 	}
-	
+
 	
 __templates/layouts/404.tmpl__
 

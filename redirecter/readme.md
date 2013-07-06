@@ -5,6 +5,9 @@ It also provides a more direct function that another middleware can call directl
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/redirecter`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/redirecter
+
 ##  Usage
 
 * Add a redirecter.Redirecter to your rack

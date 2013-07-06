@@ -4,6 +4,9 @@ A simple middleware that logs all requests
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/requestlogger`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/requestlogger
+
 ## Usage
 
 * Add requestlogger.Logger to your rack

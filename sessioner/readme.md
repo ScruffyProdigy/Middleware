@@ -4,6 +4,9 @@ This middleware loads a session for any future middleware, and then saves the se
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/sessioner`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/sessioner
+
 ##  Usage
 
 * Add sessioner.Middleware to your rack
@@ -64,4 +67,4 @@ This middleware loads a session for any future middleware, and then saves the se
 	
 	
 going to localhost:3000 will now display the number of times you've been to localhost:3000
-Note that changing "Get" to "Clear" will result in the same behavior.  "Clear" will erase the variable after getting it, but it won't matter as it will immediately get overwritten in the following "Set" command
+(note: if your browser requests a favicon from localhost:3000, then that will count as a time visiting as well)

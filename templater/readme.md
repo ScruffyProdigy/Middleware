@@ -4,6 +4,9 @@ A middleware to prepare templates for future middleware
 ## Installation
 go get github.com/ScruffyProdigy/Middleware/templater
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/templater
+
 ## Usage
 * Store all of your templates in one folder, or in subfolders of that folder
 * Call templater.GetTemplates() and add the result to your rack

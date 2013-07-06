@@ -1,5 +1,5 @@
 /*
-Session is a middleware that will load and save session variables
+Session will load and save session variables for you
 */
 package sessioner
 

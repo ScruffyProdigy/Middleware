@@ -8,6 +8,9 @@ This is mostly used to add a layout to the output of future middleware
 ##	Installation
 `go get github.com/ScruffyProdigy/Middleware/encapsulator`
 
+## Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/encapsulator
+
 ## Example
 
 __main.go__

@@ -31,7 +31,7 @@ func New(data Data) *Facebooker {
 	return this
 }
 
-func (this *Facebooker) GetConfig() *oauth.Config {
+func (this *Facebooker) Config() *oauth.Config {
 	if this.config == nil {
 		this.config = new(oauth.Config)
 		this.config.ClientId = this.data.AppId
@@ -44,10 +44,10 @@ func (this *Facebooker) GetConfig() *oauth.Config {
 	return this.config
 }
 
-func (this *Facebooker) GetStartUrl() string {
+func (this *Facebooker) StartUrl() string {
 	return "/" + this.data.StartUrl
 }
 
-func (this *Facebooker) GetRedirectUrl() string {
+func (this *Facebooker) RedirectUrl() string {
 	return "/" + this.data.RedirectUrl
 }

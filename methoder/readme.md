@@ -4,6 +4,9 @@ Allows basic html forms to issue put and delete requests by including "_method" 
 ##  Dependencies
 The form values need to be parsed before this is ran, so a middleware such as parser would be useful (github.com/ScruffyProdigy/Middleware/parser)
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/methoder
+
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/methoder`
 

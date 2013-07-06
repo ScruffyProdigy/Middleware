@@ -1,5 +1,5 @@
 /*
-router creates a branching routing system based on sections of the url
+router creates a branching routing system
 */
 package router
 

@@ -4,6 +4,9 @@ This is a lightweight routing system that uses a simple lookup on the request UR
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/interceptor`
 
+## Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/interceptor
+
 ## Usage
 
 * Call interceptor.New() to create a new interceptor

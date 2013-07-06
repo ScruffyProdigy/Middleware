@@ -4,6 +4,9 @@ This provides a branching based router that goes through every directory specifi
 ## 	Installation
 `go get github.com/ScruffyProdigy/Middleware/router`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/router
+
 ##  Usage
 
 * Create a bunch of routes
@@ -44,6 +47,7 @@ This provides a branching based router that goes through every directory specifi
 		"github.com/ScruffyProdigy/TheRack/httper"
 		"github.com/ScruffyProdigy/TheRack/rack"
 		"strings"
+		"sort"
 	)
 
 	var coins = map[string]string{"penny": "useless", "nickel": "heavy and annoying", "dime": "light and annoying", "quarter": "not obsolete quite yet"}
@@ -68,11 +72,11 @@ This provides a branching based router that goes through every directory specifi
 		v.AppendMessageString("</ul></html>")
 	}
 
-	func init() {
-		var MemberRoute *Router = router.New()
+	func main() {
+		var MemberRoute *router.Router = router.New()
 
-		MemberRoute.Routing = SignalFunc(func(vars map[string]interface{}) bool {
-			coinName := (V)(vars).CurrentSection()
+		MemberRoute.Routing = router.SignalFunc(func(vars map[string]interface{}) bool {
+			coinName := (router.V)(vars).CurrentSection()
 			coinInfo, exists := coins[coinName]
 			if !exists {
 				return false
@@ -88,7 +92,7 @@ This provides a branching based router that goes through every directory specifi
 			(httper.V)(vars).SetMessageString(name + " - " + info + " - " + MemberRoute.Route(vars))
 		})
 
-		MemberRoute.Name = NamerFunc(func(vars map[string]interface{}, prev func() string) string {
+		MemberRoute.Name = router.NamerFunc(func(vars map[string]interface{}, prev func() string) string {
 			name := "(coin)"
 			if coin, ok := vars["Name"].(string); ok {
 				name = coin
@@ -102,8 +106,8 @@ This provides a branching based router that goes through every directory specifi
 		Root := router.BasicRoute("", RootWare)
 		Root.AddRoute(CollectionRoute)
 
-		conn := httper.HttpConnection(":4011")
-		go conn.Go(Root)
+		conn := httper.HttpConnection(":3000")
+		conn.Go(Root)
 	}
 	
 

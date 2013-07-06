@@ -4,6 +4,9 @@ A middleware that makes it simple to set variables
 ## Installation
 `go get github.com/ScruffyProdigy/Middleware/varser`
 
+##  Documentation
+http://godoc.org/github.com/ScruffyProdigy/Middleware/varser
+
 ## Usage
 
 * Add a varser.V to your rack

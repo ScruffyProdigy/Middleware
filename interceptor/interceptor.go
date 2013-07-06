@@ -1,5 +1,5 @@
 /*
-	The interceptor package creates a Middleware that does a lightweight lookup for a bunch of static URLs
+	Interceptor does lightweight routing by comparing static URLs - good for APIs
 */
 package interceptor
 

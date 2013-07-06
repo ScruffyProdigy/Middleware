@@ -1,5 +1,5 @@
 /*
-	websocketer provides a middleware that will easily add websocet technology into your web app
+	websocketer makes it easy to add websocet technology into a rack based web app
 */
 package websocketer
 

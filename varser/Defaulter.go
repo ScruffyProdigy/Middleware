@@ -1,3 +1,6 @@
+/*
+Varser is a lightweight variable-setter
+*/
 package varser
 
 // V is a type you can cast your vars into in order to be a Middleware
